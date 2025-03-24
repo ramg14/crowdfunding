@@ -1,0 +1,33 @@
+<!-- campanas/templates/campanas/detalle_campana.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Detalle de Campana</title>
+</head>
+<body>
+    <h1>{{ campana.nombre }}</h1>
+    <p>{{ campana.descripcion }}</p>
+    <p>Beneficiario: {{ campana.beneficiario }}</p>
+    <p>Monto a recaudar: {{ campana.monto_a_recaudar }}</p>
+    <p>Monto recaudado: {{ campana.monto_recaudado }}</p>
+    <p>Estado: {{ campana.estado }}</p>
+    <p>Fecha inicio: {{ campana.fecha_inicio }}</p>
+    <p>Fecha cierre: {{ campana.fecha_cierre }}</p>
+    {% if campana.foto %}
+    <img src="{{ campana.foto.url }}" alt="Foto de {{ campana.nombre }}" width="300">
+    {% endif %}
+    <div>
+        <a href="{% url 'editar_campana' campana.id %}">Editar</a>
+        <a href="{% url 'eliminar_campana' campana.id %}">Eliminar</a>
+    </div>
+    <div>
+        {% if campana.estado|lower == 'abierta' %}
+            <a href="{% url 'registrar_donacion' campana.id %}">Donar</a>
+        {% else %}
+            <p>Campana no esta abierta para donaciones</p>
+        {% endif %}
+    </div>
+    <a href="{% url 'lista_campanas' %}">Volver a lista</a>
+</body>
+</html>

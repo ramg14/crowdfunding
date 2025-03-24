@@ -1,0 +1,17 @@
+<!-- campanas/templates/campanas/form_campana.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>{{ accion }} Campana</title>
+</head>
+<body>
+    <h1>{{ accion }} Campana</h1>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">{{ accion }}</button>
+    </form>
+    <a href="{% url 'lista_campanas' %}">Cancelar</a>
+</body>
+</html>

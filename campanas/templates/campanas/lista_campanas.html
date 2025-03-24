@@ -1,0 +1,33 @@
+<!-- campanas/templates/campanas/lista_campanas.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Lista de Campanas</title>
+</head>
+<body>
+    <h1>Lista de Campanas</h1>
+    <div>
+        <h3>Filtrar por categoria</h3>
+        <ul>
+            <li><a href="{% url 'lista_campanas' %}">Todas</a></li>
+            {% for cat in categorias %}
+                <li>
+                    <a href="?categoria={{ cat.id }}">{{ cat.nombre }}</a>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+    <div>
+        <a href="{% url 'crear_campana' %}">Crear Campana</a>
+    </div>
+    <ul>
+        {% for c in campanas %}
+            <li>
+                <a href="{% url 'detalle_campana' c.id %}">{{ c.nombre }}</a>
+                - {{ c.descripcion }}
+            </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
