@@ -13,4 +13,4 @@ class CampanaForm(forms.ModelForm):
 class DonacionForm(forms.ModelForm):
     class Meta:
         model = Donacion
-        fields = ['funder', 'monto']
+        fields = ['monto']

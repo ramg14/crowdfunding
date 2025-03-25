@@ -1,33 +1,38 @@
 <!-- campanas/templates/campanas/detalle_campana.html -->
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8">
-    <title>Detalle de Campana</title>
-</head>
-<body>
-    <h1>{{ campana.nombre }}</h1>
-    <p>{{ campana.descripcion }}</p>
-    <p>Beneficiario: {{ campana.beneficiario }}</p>
-    <p>Monto a recaudar: {{ campana.monto_a_recaudar }}</p>
-    <p>Monto recaudado: {{ campana.monto_recaudado }}</p>
-    <p>Estado: {{ campana.estado }}</p>
-    <p>Fecha inicio: {{ campana.fecha_inicio }}</p>
-    <p>Fecha cierre: {{ campana.fecha_cierre }}</p>
-    {% if campana.foto %}
+{% extends 'base.html' %}
+
+{% block title %}
+Detalle de Campana
+{% endblock %}
+
+{% block content %}
+<h1>{{ campana.nombre }}</h1>
+<p>{{ campana.descripcion }}</p>
+<p><strong>Beneficiario:</strong> {{ campana.beneficiario }}</p>
+<p><strong>Monto a recaudar:</strong> {{ campana.monto_a_recaudar }}</p>
+<p><strong>Monto recaudado:</strong> {{ campana.monto_recaudado }}</p>
+<p><strong>Fecha inicio:</strong> {{ campana.fecha_inicio }}</p>
+<p><strong>Fecha cierre:</strong> {{ campana.fecha_cierre }}</p>
+<p><strong>Estado:</strong> {{ campana.estado }}</p>
+
+{% if campana.foto %}
     <img src="{{ campana.foto.url }}" alt="Foto de {{ campana.nombre }}" width="300">
+{% endif %}
+
+<div class="mt-3">
+    <a href="{% url 'editar_campana' campana.id %}" class="btn btn-primary">Editar</a>
+    <a href="{% url 'eliminar_campana' campana.id %}" class="btn btn-danger">Eliminar</a>
+</div>
+
+<div class="mt-3">
+    {% if campana.estado|lower == 'abierta' %}
+        <a href="{% url 'registrar_donacion' campana.id %}" class="btn btn-success">Donar</a>
+    {% else %}
+        <p class="text-muted">Campana no esta abierta para donaciones.</p>
     {% endif %}
-    <div>
-        <a href="{% url 'editar_campana' campana.id %}">Editar</a>
-        <a href="{% url 'eliminar_campana' campana.id %}">Eliminar</a>
-    </div>
-    <div>
-        {% if campana.estado|lower == 'abierta' %}
-            <a href="{% url 'registrar_donacion' campana.id %}">Donar</a>
-        {% else %}
-            <p>Campana no esta abierta para donaciones</p>
-        {% endif %}
-    </div>
-    <a href="{% url 'lista_campanas' %}">Volver a lista</a>
-</body>
-</html>
+</div>
+
+<div class="mt-3">
+    <a href="{% url 'lista_campanas' %}" class="btn btn-secondary">Volver a lista</a>
+</div>
+{% endblock %}

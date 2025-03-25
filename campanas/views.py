@@ -2,6 +2,8 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import Campana, Categoria, Donacion
 from .forms import CampanaForm, DonacionForm
+from django.contrib.auth.decorators import login_required
+
 
 def lista_campanas(request):
     categorias = Categoria.objects.all()
@@ -57,17 +59,19 @@ def eliminar_campana(request, id):
         'campana': campana
     })
 
+@login_required
 def registrar_donacion(request, id):
     campana = get_object_or_404(Campana, id=id)
     if request.method == 'POST':
         form = DonacionForm(request.POST)
         if form.is_valid():
-            # Solo permitir donacion si la campana esta abierta
             if campana.estado.lower() == 'abierta':
                 donacion = form.save(commit=False)
                 donacion.campana = campana
+                
+                donacion.funder = request.user
                 donacion.save()
-                # Actualizar monto recaudado
+
                 campana.monto_recaudado += donacion.monto
                 campana.save()
             return redirect('detalle_campana', id=campana.id)

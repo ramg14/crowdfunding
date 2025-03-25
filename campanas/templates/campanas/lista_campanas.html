@@ -1,33 +1,32 @@
-<!-- campanas/templates/campanas/lista_campanas.html -->
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8">
-    <title>Lista de Campanas</title>
-</head>
-<body>
-    <h1>Lista de Campanas</h1>
-    <div>
-        <h3>Filtrar por categoria</h3>
-        <ul>
-            <li><a href="{% url 'lista_campanas' %}">Todas</a></li>
-            {% for cat in categorias %}
-                <li>
-                    <a href="?categoria={{ cat.id }}">{{ cat.nombre }}</a>
-                </li>
-            {% endfor %}
-        </ul>
-    </div>
-    <div>
-        <a href="{% url 'crear_campana' %}">Crear Campana</a>
-    </div>
+{% extends 'base.html' %}
+
+
+{% block title %}
+Lista de Campanas
+{% endblock %}
+
+{% block content %}
+<h1>Lista de Campanas</h1>
+<div>
+    <h3>Filtrar por categoria</h3>
     <ul>
-        {% for c in campanas %}
+        <li><a href="{% url 'lista_campanas' %}">Todas</a></li>
+        {% for cat in categorias %}
             <li>
-                <a href="{% url 'detalle_campana' c.id %}">{{ c.nombre }}</a>
-                - {{ c.descripcion }}
+                <a href="?categoria={{ cat.id }}">{{ cat.nombre }}</a>
             </li>
         {% endfor %}
     </ul>
-</body>
-</html>
+</div>
+<div>
+    <a href="{% url 'crear_campana' %}" class="btn btn-primary">Crear Campana</a>
+</div>
+<ul class="list-group mt-3">
+    {% for c in campanas %}
+        <li class="list-group-item">
+            <a href="{% url 'detalle_campana' c.id %}">{{ c.nombre }}</a>
+            - {{ c.descripcion }}
+        </li>
+    {% endfor %}
+</ul>
+{% endblock %}

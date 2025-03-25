@@ -1,0 +1,7 @@
+env/
+__pycache__/
+*.pyc
+*.sqlite3
+db.sqlite3
+*.log
+*.egg-info/

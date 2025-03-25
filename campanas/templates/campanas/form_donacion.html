@@ -1,17 +1,15 @@
-<!-- campanas/templates/campanas/form_donacion.html -->
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8">
-    <title>Donar a {{ campana.nombre }}</title>
-</head>
-<body>
-    <h1>Donar a {{ campana.nombre }}</h1>
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Donar</button>
-    </form>
-    <a href="{% url 'detalle_campana' campana.id %}">Cancelar</a>
-</body>
-</html>
+{% extends 'base.html' %}
+
+{% block title %}
+Donar a {{ campana.nombre }}
+{% endblock %}
+
+{% block content %}
+<h1>Donar a {{ campana.nombre }}</h1>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-success">Donar</button>
+</form>
+<a href="{% url 'detalle_campana' campana.id %}" class="btn btn-secondary">Cancelar</a>
+{% endblock %}

@@ -1,0 +1,16 @@
+<!-- usuarios/templates/usuarios/registro.html -->
+{% extends 'base.html' %}
+
+{% block title %}
+Registro de Usuario
+{% endblock %}
+
+{% block content %}
+<h1>Registro de Usuario</h1>
+<form method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-success">Registrarse</button>
+</form>
+<a href="{% url 'login' %}" class="btn btn-link">Iniciar sesion</a>
+{% endblock %}
