@@ -9,6 +9,10 @@ class Categoria(models.Model):
         return self.nombre
 
 class Campana(models.Model):
+    ESTADO_CHOICES = [
+        ('abierta', 'Abierta'),
+        ('cerrada', 'Cerrada'),
+    ]
     categoria = models.ForeignKey(Categoria, on_delete=models.CASCADE)
     nombre = models.CharField(max_length=100)
     descripcion = models.TextField()
@@ -18,7 +22,12 @@ class Campana(models.Model):
     monto_recaudado = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     fecha_inicio = models.DateField()
     fecha_cierre = models.DateField()
-    estado = models.CharField(max_length=20)  # Ej: 'abierta' o 'cerrada'
+    
+    estado = models.CharField(
+        max_length=20,
+        choices=ESTADO_CHOICES,  
+        default='abierta'      
+    )
 
     def __str__(self):
         return self.nombre
