@@ -19,6 +19,16 @@ Detalle de Campana
     <img src="{{ campana.foto.url }}" alt="Foto de {{ campana.nombre }}" width="300">
 {% endif %}
 
+<div class="progress my-3">
+    <div class="progress-bar" role="progressbar" 
+         style="width: {{ porcentaje }}%;" 
+         aria-valuenow="{{ porcentaje }}" 
+         aria-valuemin="0" 
+         aria-valuemax="100">
+        {{ porcentaje|floatformat:2 }}%
+    </div>
+</div>
+
 <div class="mt-3">
     <a href="{% url 'editar_campana' campana.id %}" class="btn btn-primary">Editar</a>
     <a href="{% url 'eliminar_campana' campana.id %}" class="btn btn-danger">Eliminar</a>
@@ -35,4 +45,6 @@ Detalle de Campana
 <div class="mt-3">
     <a href="{% url 'lista_campanas' %}" class="btn btn-secondary">Volver a lista</a>
 </div>
-{% endblock %}
+{% endblock %} 
+
+

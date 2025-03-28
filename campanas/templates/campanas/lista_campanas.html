@@ -1,32 +1,85 @@
 {% extends 'base.html' %}
 
-
 {% block title %}
 Lista de Campanas
 {% endblock %}
 
 {% block content %}
 <h1>Lista de Campanas</h1>
-<div>
-    <h3>Filtrar por categoria</h3>
-    <ul>
-        <li><a href="{% url 'lista_campanas' %}">Todas</a></li>
+
+<!-- Formulario de busqueda -->
+<form method="GET" class="mb-3">
+    <div class="row">
+        <div class="col-md-4">
+            <input type="text" name="q" value="{{ q }}" placeholder="Buscar campanas" class="form-control">
+        </div>
+        <div class="col-md-2">
+            <button type="submit" class="btn btn-primary">Buscar</button>
+        </div>
+    </div>
+</form>
+
+<!-- Dropdown para categoria -->
+<form method="GET" class="mb-3">
+    <select name="categoria" class="form-control" onchange="this.form.submit()">
+        <option value="">Todas las categorias</option>
         {% for cat in categorias %}
-            <li>
-                <a href="?categoria={{ cat.id }}">{{ cat.nombre }}</a>
-            </li>
+            <option value="{{ cat.id }}" {% if cat.id|stringformat:"s" == categoria_id %}selected{% endif %}>
+                {{ cat.nombre }}
+            </option>
         {% endfor %}
-    </ul>
+    </select>
+    <input type="hidden" name="q" value="{{ q }}">
+</form>
+
+<!-- Boton para crear campana -->
+<div class="mb-3">
+    <a href="{% url 'crear_campana' %}" class="btn btn-success">Crear Campana</a>
 </div>
-<div>
-    <a href="{% url 'crear_campana' %}" class="btn btn-primary">Crear Campana</a>
-</div>
+
+<!-- Lista de campanas -->
 <ul class="list-group mt-3">
-    {% for c in campanas %}
+    {% for campana in campanas %}
         <li class="list-group-item">
-            <a href="{% url 'detalle_campana' c.id %}">{{ c.nombre }}</a>
-            - {{ c.descripcion }}
+            <a href="{% url 'detalle_campana' campana.id %}">{{ campana.nombre }}</a> - {{ campana.descripcion }}
         </li>
+    {% empty %}
+        <li class="list-group-item">No se encontraron campanas.</li>
     {% endfor %}
 </ul>
+
+<!-- Seccion de paginacion -->
+{% if campanas.has_other_pages %}
+<nav aria-label="Page navigation" class="mt-3">
+    <ul class="pagination">
+        {% if campanas.has_previous %}
+        <li class="page-item">
+            <a class="page-link" href="?page={{ campanas.previous_page_number }}{% if q %}&q={{ q }}{% endif %}{% if categoria_id %}&categoria={{ categoria_id }}{% endif %}">
+                Anterior
+            </a>
+        </li>
+        {% endif %}
+
+        {% for num in campanas.paginator.page_range %}
+            {% if campanas.number == num %}
+                <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+            {% else %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ num }}{% if q %}&q={{ q }}{% endif %}{% if categoria_id %}&categoria={{ categoria_id }}{% endif %}">
+                        {{ num }}
+                    </a>
+                </li>
+            {% endif %}
+        {% endfor %}
+
+        {% if campanas.has_next %}
+        <li class="page-item">
+            <a class="page-link" href="?page={{ campanas.next_page_number }}{% if q %}&q={{ q }}{% endif %}{% if categoria_id %}&categoria={{ categoria_id }}{% endif %}">
+                Siguiente
+            </a>
+        </li>
+        {% endif %}
+    </ul>
+</nav>
+{% endif %}
 {% endblock %}

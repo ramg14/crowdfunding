@@ -3,6 +3,8 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import AuthenticationForm
 from .forms import RegistroForm
+from django.contrib.auth.decorators import login_required
+from campanas.models import Donacion, Campana
 
 def registro(request):
     if request.method == 'POST':
@@ -33,3 +35,19 @@ def iniciar_sesion(request):
 def cerrar_sesion(request):
     logout(request)
     return redirect('lista_campanas')
+
+
+@login_required
+def mi_perfil(request):
+    usuario = request.user
+
+    # Donaciones del usuario
+    donaciones = Donacion.objects.filter(funder=usuario)
+
+    # Campanas creadas por el usuario
+    campanas = Campana.objects.filter(creador=usuario)
+
+    return render(request, 'usuarios/perfil.html', {
+        'donaciones': donaciones,
+        'campanas': campanas,
+    })

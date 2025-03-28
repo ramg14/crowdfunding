@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Mi Perfil
+{% endblock %}
+
+{% block content %}
+<h1>Mi Perfil</h1>
+
+<h2>Mis Donaciones</h2>
+<ul class="list-group">
+    {% for donacion in donaciones %}
+        <li class="list-group-item">
+            <strong>Campana:</strong> 
+            <a href="{% url 'detalle_campana' donacion.campana.id %}">
+                {{ donacion.campana.nombre }}
+            </a><br>
+            <strong>Monto:</strong> {{ donacion.monto }}<br>
+            <strong>Fecha:</strong> {{ donacion.fecha|date:"d/m/Y H:i" }}
+        </li>
+    {% empty %}
+        <li class="list-group-item">No has realizado donaciones.</li>
+    {% endfor %}
+</ul>
+
+<h2 class="mt-4">Mis Campanas</h2>
+<ul class="list-group">
+    {% for campana in campanas %}
+        <li class="list-group-item">
+            <a href="{% url 'detalle_campana' campana.id %}">
+                {{ campana.nombre }}
+            </a>
+            - {{ campana.descripcion }}
+        </li>
+    {% empty %}
+        <li class="list-group-item">No has creado campañas.</li>
+    {% endfor %}
+</ul>
+{% endblock %}
