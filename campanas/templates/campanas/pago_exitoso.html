@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Pago Exitoso
+{% endblock %}
+
+{% block content %}
+<div class="alert alert-success mt-4" role="alert">
+    ¡El pago se realizo con exito! Gracias por tu donacion.
+</div>
+<a href="{% url 'lista_campanas' %}" class="btn btn-primary">Volver a la lista de campanas</a>
+{% endblock %}

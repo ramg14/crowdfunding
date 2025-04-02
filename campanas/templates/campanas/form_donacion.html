@@ -6,10 +6,14 @@ Donar a {{ campana.nombre }}
 
 {% block content %}
 <h1>Donar a {{ campana.nombre }}</h1>
-<form method="post">
+
+<form method="POST">
     {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit" class="btn btn-success">Donar</button>
+    <div>
+        <label for="monto">Monto a donar (USD):</label>
+        <input type="number" name="monto" step="0.01" min="0" required>
+    </div>
+    <button type="submit" class="btn btn-primary mt-2">Donar</button>
+    <a href="{% url 'detalle_campana' campana.id %}" class="btn btn-secondary mt-2">Cancelar</a>
 </form>
-<a href="{% url 'detalle_campana' campana.id %}" class="btn btn-secondary">Cancelar</a>
 {% endblock %}

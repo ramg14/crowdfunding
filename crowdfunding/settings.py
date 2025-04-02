@@ -129,3 +129,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 LOGIN_URL = '/usuarios/login/'
+
+STRIPE_SECRET_KEY = 'sk_test_51R8kRW4chubZIgdnaiufEkv7W6foe07F8Pw8LmaebCHYCYgxFRVzg4eUqmhDFxzbMc2ncC4LwG9RMLEepAuTEQRa00maR3Awlt'  
+STRIPE_WEBHOOK_SECRET = 'whsec_14cfd9af859d8477cd6c8d35e4767ab17e343a89e134e659be2833e6b94a7a6a' 

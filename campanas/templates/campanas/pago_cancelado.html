@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Pago Cancelado
+{% endblock %}
+
+{% block content %}
+<div class="alert alert-warning mt-4" role="alert">
+    El pago fue cancelado. Si lo deseas, podes volver a intentarlo.
+</div>
+<a href="{% url 'lista_campanas' %}" class="btn btn-secondary">Volver a la lista de campanas</a>
+{% endblock %}

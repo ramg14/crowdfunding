@@ -6,8 +6,10 @@ from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.http import HttpResponseForbidden
 
-
-
+import stripe
+from django.conf import settings
+from django.views.decorators.csrf import csrf_exempt
+from django.http import HttpResponse, HttpResponseBadRequest
 
 def lista_campanas(request):
     from .models import Campana, Categoria  # si no lo tenias arriba
@@ -137,3 +139,129 @@ def detalle_campana(request, id):
         'campana': campana,
         'porcentaje': porcentaje,
     })
+
+
+stripe.api_key = settings.STRIPE_SECRET_KEY
+
+def registrar_donacion(request, id):
+    # Obtenemos la campana
+    campana = get_object_or_404(Campana, id=id)
+
+    if request.method == 'POST':
+        # 1. Capturamos el monto que ingreso el usuario
+        monto_str = request.POST.get('monto', '0')
+        try:
+            monto = float(monto_str)
+        except ValueError:
+            monto = 0
+
+        # 2. Crear la sesion de Stripe Checkout
+        session = stripe.checkout.Session.create(
+            payment_method_types=['card'],
+            line_items=[{
+                'price_data': {
+                    'currency': 'usd',
+                    'product_data': {
+                        'name': f"Donacion a {campana.nombre}",
+                    },
+                    'unit_amount': int(monto * 100),  # Convertir a centavos
+                },
+                'quantity': 1,
+            }],
+            mode='payment',
+            # Donde redirigir si el pago se completa o se cancela
+            success_url=request.build_absolute_uri('/pago/exito/'),
+            cancel_url=request.build_absolute_uri('/pago/cancelado/'),
+            # Enviamos metadata para luego identificar la campana y el monto
+            metadata={
+                'campana_id': str(campana.id),
+                'monto': str(monto),
+            },
+        )
+
+        # 3. Redirigir al usuario a la pagina de Stripe Checkout
+        return redirect(session.url, code=303)
+
+    else:
+        # GET: Mostramos el formulario
+        return render(request, 'campanas/form_donacion.html', {
+            'campana': campana
+        })
+
+
+@csrf_exempt
+def stripe_webhook(request):
+    payload = request.body
+    sig_header = request.META.get('HTTP_STRIPE_SIGNATURE')
+    endpoint_secret = settings.STRIPE_WEBHOOK_SECRET
+
+    try:
+        event = stripe.Webhook.construct_event(
+            payload, sig_header, endpoint_secret
+        )
+    except ValueError:
+        return HttpResponseBadRequest("Invalid payload")
+    except stripe.error.SignatureVerificationError:
+        return HttpResponseBadRequest("Invalid signature")
+
+    if event['type'] == 'checkout.session.completed':
+        session = event['data']['object']
+        handle_checkout_session(session)
+
+    return HttpResponse(status=200)
+
+    
+
+def handle_checkout_session(session):
+    from decimal import Decimal
+    from django.contrib.auth.models import User
+    from .models import Campana, Donacion
+
+    campana_id = session.get('metadata', {}).get('campana_id')
+    monto_str = session.get('metadata', {}).get('monto', '0')
+    user_id = session.get('metadata', {}).get('user_id')  # si lo mandaste
+
+    if not campana_id:
+        print("No campana_id en metadata")
+        return
+
+    try:
+        campana = Campana.objects.get(id=campana_id)
+    except Campana.DoesNotExist:
+        print(f"La campana con id={campana_id} no existe.")
+        return
+
+    try:
+        monto_pagado = Decimal(monto_str)
+    except:
+        monto_pagado = Decimal('0')
+
+    # Recuperar el usuario si se envio user_id
+    funder = None
+    if user_id and user_id != 'anon':
+        try:
+            funder = User.objects.get(id=user_id)
+        except User.DoesNotExist:
+            funder = None
+
+    # Crear la donacion
+    Donacion.objects.create(
+        campana=campana,
+        funder=funder,  # si es obligatorio y funder es None => error
+        monto=monto_pagado
+    )
+
+    # Actualizar el monto recaudado
+    campana.monto_recaudado += monto_pagado
+    campana.save()
+
+    print(f"Donacion de {monto_pagado} creada para campana {campana.nombre}")
+
+
+def pago_exitoso(request):
+    # Renderiza una plantilla de exito
+    return render(request, 'campanas/pago_exitoso.html')
+
+def pago_cancelado(request):
+    # Renderiza una plantilla de pago cancelado
+    return render(request, 'campanas/pago_cancelado.html')
