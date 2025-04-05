@@ -1,43 +1,94 @@
-<!-- templates/base.html -->
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    {% block title %}{% endblock %}
+    <meta charset="UTF-8">
+    <title>{% block title %}Crowdfunding{% endblock %}</title>
+    <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <!-- Animate.css para animaciones -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <style>
+        /* Estilos personalizados para el Hero */
+        .hero {
+            background-image: url('https://picsum.photos/1600/600?grayscale');
+            background-size: cover;
+            background-position: center;
+            height: 400px;
+            color: #fff;
+            position: relative;
+        }
+        .hero-overlay {
+            background-color: rgba(0, 0, 0, 0.5);
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            right: 0;
+            left: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    </style>
 </head>
 <body>
+    <!-- Barra de navegación -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="{% url 'lista_campanas' %}">Crowdfunding</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" 
+                data-bs-target="#navbarNav" aria-controls="navbarNav" 
+                aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
 
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="#">Crowdfunding</a>
-
-        <!-- Aqui ira el menu de navegacion -->
-        <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-            <!-- Si el usuario esta autenticado, mostramos enlaces a "Mi Perfil" y "Cerrar Sesion" -->
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto">
             {% if user.is_authenticated %}
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'mi_perfil' %}">Mi Perfil</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'logout' %}">Cerrar Sesion</a>
-                </li>
+              <li class="nav-item">
+                <span class="navbar-text">Bienvenido, {{ user.username }}</span>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'mi_perfil' %}">Mi Perfil</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'logout' %}">Cerrar Sesión</a>
+              </li>
             {% else %}
-                <!-- Si NO esta logueado, mostramos enlaces a "Iniciar Sesion" y "Registrarse" -->
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'login' %}">Iniciar Sesion</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'registro' %}">Registrarse</a>
-                </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'login' %}">Iniciar Sesión</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'registro' %}">Registrarse</a>
+              </li>
             {% endif %}
-        </ul>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <div class="hero">
+        <div class="hero-overlay">
+            <div class="text-center">
+                <h1 class="display-4 animate__animated animate__fadeInDown">Bienvenido a Crowdfunding</h1>
+                <p class="lead animate__animated animate__fadeInUp">
+                    Apoya proyectos que transforman comunidades y vidas.
+                </p>
+                <!-- Reemplaza el enlace por la ruta 'crear_campana' -->
+                <a href="{% url 'crear_campana' %}" 
+                   class="btn btn-primary btn-lg animate__animated animate__fadeInUp">
+                   Crear Campaña
+                </a>
+            </div>
+        </div>
     </div>
-</nav>
 
-<div class="container mt-4">
-    {% block content %}{% endblock %}
-</div>
+    <!-- Bloque de contenido donde se inyectan las demás páginas -->
+    <div class="container mt-4">
+        {% block content %}{% endblock %}
+    </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

@@ -5,81 +5,97 @@ Lista de Campanas
 {% endblock %}
 
 {% block content %}
-<h1>Lista de Campanas</h1>
+<div class="container mt-4">
+    <h1>Lista de Campanas</h1>
 
-<!-- Formulario de busqueda -->
-<form method="GET" class="mb-3">
-    <div class="row">
-        <div class="col-md-4">
-            <input type="text" name="q" value="{{ q }}" placeholder="Buscar campanas" class="form-control">
+    <!-- Botón para crear una nueva campaña 
+    <div class="mb-4 text-end">
+        <a href="{% url 'crear_campana' %}" class="btn btn-success btn-lg">
+            Crear Campaña
+        </a>
+    </div> -->
+
+    <!-- Formulario para filtrar por búsqueda y categoría -->
+    <form method="GET" class="mb-3">
+        <div class="row">
+            <!-- Campo de búsqueda (opcional) -->
+            <div class="col-md-4">
+                <input type="text" name="q" value="{{ q }}" placeholder="Buscar campanas" class="form-control">
+            </div>
+            <!-- Dropdown de categorías -->
+            <div class="col-md-4">
+                <select name="categoria" class="form-control" onchange="this.form.submit()">
+                    <option value="">Todas las categorías</option>
+                    {% for cat in categorias %}
+                        <option value="{{ cat.id }}" {% if cat.id|stringformat:"s" == categoria_id %}selected{% endif %}>
+                            {{ cat.nombre }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <!-- Botón de búsqueda opcional 
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-primary">Filtrar</button>
+            </div> -->
         </div>
-        <div class="col-md-2">
-            <button type="submit" class="btn btn-primary">Buscar</button>
-        </div>
+    </form>
+
+    <!-- Grid de Campañas -->
+    <div class="row row-cols-1 row-cols-md-3 g-4 align-items-stretch">
+        {% for campana in campanas %}
+            <div class="col">
+                <div class="card h-100 shadow-sm">
+                    {% if campana.foto %}
+                        <img src="{{ campana.foto.url }}" 
+                             class="card-img-top" 
+                             alt="Imagen de {{ campana.nombre }}"
+                             style="height: 200px; object-fit: cover;">
+                    {% endif %}
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">{{ campana.nombre }}</h5>
+                        <p class="card-text flex-grow-1">{{ campana.descripcion|truncatewords:20 }}</p>
+                        <p class="card-text mb-1">
+                            <small class="text-muted">Monto a recaudar: ${{ campana.monto_a_recaudar }}</small>
+                        </p>
+                        <p class="card-text mb-2">
+                            <small class="text-muted">Monto recaudado: ${{ campana.monto_recaudado }}</small>
+                        </p>
+                        <a href="{% url 'detalle_campana' campana.id %}" class="btn btn-outline-primary mt-auto">
+                            Ver Detalle
+                        </a>
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <p>No se encontraron campañas.</p>
+        {% endfor %}
     </div>
-</form>
 
-<!-- Dropdown para categoria -->
-<form method="GET" class="mb-3">
-    <select name="categoria" class="form-control" onchange="this.form.submit()">
-        <option value="">Todas las categorias</option>
-        {% for cat in categorias %}
-            <option value="{{ cat.id }}" {% if cat.id|stringformat:"s" == categoria_id %}selected{% endif %}>
-                {{ cat.nombre }}
-            </option>
-        {% endfor %}
-    </select>
-    <input type="hidden" name="q" value="{{ q }}">
-</form>
-
-<!-- Boton para crear campana -->
-<div class="mb-3">
-    <a href="{% url 'crear_campana' %}" class="btn btn-success">Crear Campana</a>
+    <!-- Paginación -->
+    {% if campanas.has_other_pages %}
+        <nav aria-label="Page navigation" class="d-flex justify-content-center">
+            <ul class="pagination">
+                {% if campanas.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ campanas.previous_page_number }}{% if q %}&q={{ q }}{% endif %}{% if categoria_id %}&categoria={{ categoria_id }}{% endif %}">Anterior</a>
+                    </li>
+                {% endif %}
+                {% for num in campanas.paginator.page_range %}
+                    {% if campanas.number == num %}
+                        <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+                    {% else %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ num }}{% if q %}&q={{ q }}{% endif %}{% if categoria_id %}&categoria={{ categoria_id }}{% endif %}">{{ num }}</a>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+                {% if campanas.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ campanas.next_page_number }}{% if q %}&q={{ q }}{% endif %}{% if categoria_id %}&categoria={{ categoria_id }}{% endif %}">Siguiente</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+    {% endif %}
 </div>
-
-<!-- Lista de campanas -->
-<ul class="list-group mt-3">
-    {% for campana in campanas %}
-        <li class="list-group-item">
-            <a href="{% url 'detalle_campana' campana.id %}">{{ campana.nombre }}</a> - {{ campana.descripcion }}
-        </li>
-    {% empty %}
-        <li class="list-group-item">No se encontraron campanas.</li>
-    {% endfor %}
-</ul>
-
-<!-- Seccion de paginacion -->
-{% if campanas.has_other_pages %}
-<nav aria-label="Page navigation" class="mt-3">
-    <ul class="pagination">
-        {% if campanas.has_previous %}
-        <li class="page-item">
-            <a class="page-link" href="?page={{ campanas.previous_page_number }}{% if q %}&q={{ q }}{% endif %}{% if categoria_id %}&categoria={{ categoria_id }}{% endif %}">
-                Anterior
-            </a>
-        </li>
-        {% endif %}
-
-        {% for num in campanas.paginator.page_range %}
-            {% if campanas.number == num %}
-                <li class="page-item active"><span class="page-link">{{ num }}</span></li>
-            {% else %}
-                <li class="page-item">
-                    <a class="page-link" href="?page={{ num }}{% if q %}&q={{ q }}{% endif %}{% if categoria_id %}&categoria={{ categoria_id }}{% endif %}">
-                        {{ num }}
-                    </a>
-                </li>
-            {% endif %}
-        {% endfor %}
-
-        {% if campanas.has_next %}
-        <li class="page-item">
-            <a class="page-link" href="?page={{ campanas.next_page_number }}{% if q %}&q={{ q }}{% endif %}{% if categoria_id %}&categoria={{ categoria_id }}{% endif %}">
-                Siguiente
-            </a>
-        </li>
-        {% endif %}
-    </ul>
-</nav>
-{% endif %}
 {% endblock %}

@@ -12,36 +12,37 @@ from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse, HttpResponseBadRequest
 
 def lista_campanas(request):
-    from .models import Campana, Categoria  # si no lo tenias arriba
-
+    # Obtenemos todas las categorías para el filtro
     categorias = Categoria.objects.all()
+    # Obtenemos el término de búsqueda (opcional)
     q = request.GET.get('q', '')
+    # Obtenemos el parámetro 'categoria' de la URL
     categoria_id = request.GET.get('categoria')
-
-    # 1. Obtenemos todas las campañas ordenadas
+    
+    # Obtenemos todas las campañas ordenadas por fecha de inicio descendente
     campanas = Campana.objects.all().order_by('-fecha_inicio')
-
-    # 2. Filtro por categoria
+    
+    # Si se seleccionó una categoría, filtramos las campañas
     if categoria_id:
         campanas = campanas.filter(categoria_id=categoria_id)
-
-    # 3. Filtro por termino de busqueda (q)
+    
+    # Si se ingresó un término de búsqueda, filtramos por el nombre (insensible a mayúsculas)
     if q:
         campanas = campanas.filter(nombre__icontains=q)
-
-    # 4. Crear el paginador: definimos cuantas campañas por pagina
-    paginator = Paginator(campanas, 10)  # 10 campañas por pagina
-    # 5. Obtenemos el numero de pagina desde la URL
+    
+    # Creamos la paginación (10 campañas por página)
+    paginator = Paginator(campanas, 9)
     page_number = request.GET.get('page')
-    # 6. Obtener la pagina actual (campanas_page)
     campanas_page = paginator.get_page(page_number)
-
+    
+    # Enviamos los datos a la plantilla
     return render(request, 'campanas/lista_campanas.html', {
-        'campanas': campanas_page,  # Enviamos la pagina actual
+        'campanas': campanas_page,
         'categorias': categorias,
         'q': q,
         'categoria_id': categoria_id,
     })
+
 
 def detalle_campana(request, id):
     campana = get_object_or_404(Campana, id=id)
@@ -142,6 +143,7 @@ def detalle_campana(request, id):
 
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
+@login_required
 
 def registrar_donacion(request, id):
     # Obtenemos la campana
@@ -212,14 +214,15 @@ def stripe_webhook(request):
 
     
 
-def handle_checkout_session(session):
-    from decimal import Decimal
-    from django.contrib.auth.models import User
-    from .models import Campana, Donacion
+from decimal import Decimal
+from django.contrib.auth.models import User
+from .models import Campana, Donacion
 
+def handle_checkout_session(session):
+    # Extraer metadatos
     campana_id = session.get('metadata', {}).get('campana_id')
     monto_str = session.get('metadata', {}).get('monto', '0')
-    user_id = session.get('metadata', {}).get('user_id')  # si lo mandaste
+    user_id = session.get('metadata', {}).get('user_id')  # Esto es opcional
 
     if not campana_id:
         print("No campana_id en metadata")
@@ -228,26 +231,28 @@ def handle_checkout_session(session):
     try:
         campana = Campana.objects.get(id=campana_id)
     except Campana.DoesNotExist:
-        print(f"La campana con id={campana_id} no existe.")
+        print(f"La campana con id {campana_id} no existe.")
         return
 
     try:
         monto_pagado = Decimal(monto_str)
-    except:
+    except Exception as e:
+        print(f"Error al convertir el monto: {e}")
         monto_pagado = Decimal('0')
 
-    # Recuperar el usuario si se envio user_id
-    funder = None
+    # Determinar el usuario (funder)
+    funder = None  # Por defecto, donación anónima
     if user_id and user_id != 'anon':
         try:
             funder = User.objects.get(id=user_id)
         except User.DoesNotExist:
+            print("No se encontró el usuario con ese ID.")
             funder = None
 
-    # Crear la donacion
-    Donacion.objects.create(
+    # Crear la donación
+    donacion = Donacion.objects.create(
         campana=campana,
-        funder=funder,  # si es obligatorio y funder es None => error
+        funder=funder,
         monto=monto_pagado
     )
 
@@ -255,8 +260,7 @@ def handle_checkout_session(session):
     campana.monto_recaudado += monto_pagado
     campana.save()
 
-    print(f"Donacion de {monto_pagado} creada para campana {campana.nombre}")
-
+    print(f"Donacion de {monto_pagado} creada para la campana {campana.nombre}")
 
 def pago_exitoso(request):
     # Renderiza una plantilla de exito

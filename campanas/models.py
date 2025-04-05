@@ -52,6 +52,8 @@ class Donacion(models.Model):
     monto = models.DecimalField(max_digits=10, decimal_places=2)
     fecha = models.DateTimeField(auto_now_add=True)
 
-
     def __str__(self):
-        return f"Donacion de {self.funder.username} a {self.campana}"
+        if self.funder:
+            return f"Donacion de {self.funder.username} a {self.campana}"
+        else:
+            return f"Donacion anonima a {self.campana}"

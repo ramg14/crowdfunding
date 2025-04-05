@@ -29,10 +29,16 @@ Detalle de Campana
     </div>
 </div>
 
-<div class="mt-3">
-    <a href="{% url 'editar_campana' campana.id %}" class="btn btn-primary">Editar</a>
-    <a href="{% url 'eliminar_campana' campana.id %}" class="btn btn-danger">Eliminar</a>
-</div>
+{% if user.is_authenticated %}
+    {% if user == campana.creador or user.is_staff %}
+        <div class="mt-3">
+            <a href="{% url 'editar_campana' campana.id %}" class="btn btn-primary">Editar</a>
+            <a href="{% url 'eliminar_campana' campana.id %}" class="btn btn-danger">Eliminar</a>
+        </div>
+    {% endif %}
+{% endif %}
+
+
 
 <div class="mt-3">
     {% if campana.estado|lower == 'abierta' %}
