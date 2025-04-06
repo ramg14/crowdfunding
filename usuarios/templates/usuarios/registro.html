@@ -1,16 +1,73 @@
-<!-- usuarios/templates/usuarios/registro.html -->
 {% extends 'base.html' %}
-
-{% block title %}
-Registro de Usuario
-{% endblock %}
+{% block title %}Registro de Usuario{% endblock %}
 
 {% block content %}
-<h1>Registro de Usuario</h1>
-<form method="POST">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit" class="btn btn-success">Registrarse</button>
-</form>
-<a href="{% url 'login' %}" class="btn btn-link">Iniciar sesion</a>
+<div class="container d-flex justify-content-center align-items-center" style="min-height: 100vh; background-color: #f8f9fa;">
+  <div class="row w-100 justify-content-center">
+    <div class="col-md-6 col-lg-4">
+      <div class="card p-4 shadow" style="background-color: #ffffff;">
+        <h2 class="text-center mb-4">Registro de Usuario</h2>
+
+        <!-- Errores globales del formulario -->
+        {% if form.non_field_errors %}
+          <div class="alert alert-danger">
+            {% for error in form.non_field_errors %}
+              {{ error }}<br>
+            {% endfor %}
+          </div>
+        {% endif %}
+        
+        <form method="post" novalidate>
+          {% csrf_token %}
+          
+          <!-- Campo: Nombre de usuario -->
+          <div class="mb-3">
+            <label for="id_username" class="form-label" style="width: 100%;">Nombre de usuario</label>
+            {{ form.username }}
+            {% for error in form.username.errors %}
+              <div class="text-danger">{{ error }}</div>
+            {% endfor %}
+          </div>
+          
+          <!-- Campo: Email (si tu formulario lo incluye) -->
+          {% if form.email %}
+          <div class="mb-3">
+            <label for="id_email" class="form-label" style="width: 100%;">Email</label>
+            {{ form.email }}
+            {% for error in form.email.errors %}
+              <div class="text-danger">{{ error }}</div>
+            {% endfor %}
+          </div>
+          {% endif %}
+          
+          <!-- Campo: Contraseña 1 -->
+          <div class="mb-3">
+            <label for="id_password1" class="form-label" style="width: 100%;">Contraseña</label>
+            {{ form.password1 }}
+            {% for error in form.password1.errors %}
+              <div class="text-danger">{{ error }}</div>
+            {% endfor %}
+          </div>
+          
+          <!-- Campo: Contraseña 2 -->
+          <div class="mb-3">
+            <label for="id_password2" class="form-label" style="width: 100%;">Confirmar contraseña</label>
+            {{ form.password2 }}
+            {% for error in form.password2.errors %}
+              <div class="text-danger">{{ error }}</div>
+            {% endfor %}
+          </div>
+          
+          <button type="submit" class="btn btn-primary w-100" style="height: 50px; font-size: 1.2rem;">
+            Registrarse
+          </button>
+        </form>
+        
+        <div class="mt-3 text-center">
+          ¿Ya tienes cuenta? <a href="{% url 'login' %}">Inicia Sesión</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock %}

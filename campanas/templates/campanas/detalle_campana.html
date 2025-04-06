@@ -1,4 +1,3 @@
-<!-- campanas/templates/campanas/detalle_campana.html -->
 {% extends 'base.html' %}
 
 {% block title %}
@@ -6,51 +5,65 @@ Detalle de Campana
 {% endblock %}
 
 {% block content %}
-<h1>{{ campana.nombre }}</h1>
-<p>{{ campana.descripcion }}</p>
-<p><strong>Beneficiario:</strong> {{ campana.beneficiario }}</p>
-<p><strong>Monto a recaudar:</strong> {{ campana.monto_a_recaudar }}</p>
-<p><strong>Monto recaudado:</strong> {{ campana.monto_recaudado }}</p>
-<p><strong>Fecha inicio:</strong> {{ campana.fecha_inicio }}</p>
-<p><strong>Fecha cierre:</strong> {{ campana.fecha_cierre }}</p>
-<p><strong>Estado:</strong> {{ campana.estado }}</p>
-
-{% if campana.foto %}
-    <img src="{{ campana.foto.url }}" alt="Foto de {{ campana.nombre }}" width="300">
-{% endif %}
-
-<div class="progress my-3">
-    <div class="progress-bar" role="progressbar" 
-         style="width: {{ porcentaje }}%;" 
-         aria-valuenow="{{ porcentaje }}" 
-         aria-valuemin="0" 
-         aria-valuemax="100">
-        {{ porcentaje|floatformat:2 }}%
+<div class="container mt-4">
+  <div class="row">
+    <!-- Columna izquierda: Imagen -->
+    <div class="col-md-6 mb-3">
+      {% if campana.foto %}
+        <img src="{{ campana.foto.url }}" 
+             alt="Foto de {{ campana.nombre }}" 
+             class="img-fluid rounded shadow" 
+             style="object-fit: cover; width: 100%; max-height: 400px;">
+      {% else %}
+        <img src="https://via.placeholder.com/600x400.png?text=Sin+Imagen" 
+             alt="Sin imagen" 
+             class="img-fluid rounded shadow"
+             style="object-fit: cover; width: 100%; max-height: 400px;">
+      {% endif %}
     </div>
-</div>
 
-{% if user.is_authenticated %}
-    {% if user == campana.creador or user.is_staff %}
-        <div class="mt-3">
-            <a href="{% url 'editar_campana' campana.id %}" class="btn btn-primary">Editar</a>
-            <a href="{% url 'eliminar_campana' campana.id %}" class="btn btn-danger">Eliminar</a>
+    <!-- Columna derecha: Información -->
+    <div class="col-md-6">
+      <h1>{{ campana.nombre }}</h1>
+      <p>{{ campana.descripcion }}</p>
+      <p><strong>Beneficiario:</strong> {{ campana.beneficiario }}</p>
+      <p><strong>Monto a recaudar:</strong> ${{ campana.monto_a_recaudar|floatformat:2 }}</p>
+      <p><strong>Monto recaudado:</strong> ${{ campana.monto_recaudado|floatformat:2 }}</p>
+      <p><strong>Fecha inicio:</strong> {{ campana.fecha_inicio }}</p>
+      <p><strong>Fecha cierre:</strong> {{ campana.fecha_cierre }}</p>
+      <p><strong>Estado:</strong> {{ campana.estado }}</p>
+
+      <!-- Barra de progreso -->
+      <div class="progress my-3" style="height: 25px;">
+        <div class="progress-bar progress-bar-striped bg-success" role="progressbar"
+             style="width: {{ porcentaje }}%;" 
+             aria-valuenow="{{ porcentaje }}" 
+             aria-valuemin="0" 
+             aria-valuemax="100">
+          {{ porcentaje|floatformat:2 }}%
         </div>
-    {% endif %}
-{% endif %}
+      </div>
 
+      <!-- Botones de acción -->
+      {% if user.is_authenticated %}
+          {% if user == campana.creador or user.is_staff %}
+            <div class="mb-3">
+              <a href="{% url 'editar_campana' campana.id %}" class="btn btn-primary me-2">Editar</a>
+              <a href="{% url 'eliminar_campana' campana.id %}" class="btn btn-danger">Eliminar</a>
+            </div>
+          {% endif %}
+      {% endif %}
 
-
-<div class="mt-3">
-    {% if campana.estado|lower == 'abierta' %}
+      {% if campana.estado|lower == 'abierta' %}
         <a href="{% url 'registrar_donacion' campana.id %}" class="btn btn-success">Donar</a>
-    {% else %}
-        <p class="text-muted">Campana no esta abierta para donaciones.</p>
-    {% endif %}
+      {% else %}
+        <p class="text-muted">Campaña no está abierta para donaciones.</p>
+      {% endif %}
+
+      <div class="mt-3">
+        <a href="{% url 'lista_campanas' %}" class="btn btn-secondary">Volver a lista</a>
+      </div>
+    </div>
+  </div>
 </div>
-
-<div class="mt-3">
-    <a href="{% url 'lista_campanas' %}" class="btn btn-secondary">Volver a lista</a>
-</div>
-{% endblock %} 
-
-
+{% endblock %}
