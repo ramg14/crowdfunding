@@ -45,7 +45,7 @@
           <ul class="navbar-nav ms-auto">
             {% if user.is_authenticated %}
               <li class="nav-item">
-                <span class="navbar-text">Bienvenido, {{ user.username }}</span>
+                <span class="navbar-text">Bienvenido, {{ user.username }} {{ user.id }}</span>
               </li>
               <li class="nav-item">
                 <a class="nav-link" href="{% url 'mi_perfil' %}">Mi Perfil</a>

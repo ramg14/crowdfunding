@@ -106,24 +106,37 @@ def eliminar_campana(request, id):
     })
 
 
+from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib.auth.decorators import login_required
+from campanas.models import Campana, Donacion
+from .forms import DonacionForm
+
 @login_required
 def registrar_donacion(request, id):
+
+    print("==== EN registrar_donacion ====")  # <-- Depuración
+    print("Usuario autenticado:", request.user, "ID:", request.user.id)
+
     campana = get_object_or_404(Campana, id=id)
+    
     if request.method == 'POST':
         form = DonacionForm(request.POST)
         if form.is_valid():
             if campana.estado.lower() == 'abierta':
                 donacion = form.save(commit=False)
+                # Asignar la campaña a la donacion
                 donacion.campana = campana
-                
+                # Asignar el usuario autenticado a la donacion
                 donacion.funder = request.user
                 donacion.save()
 
+                # Actualizar el monto recaudado de la campaña
                 campana.monto_recaudado += donacion.monto
                 campana.save()
             return redirect('detalle_campana', id=campana.id)
     else:
         form = DonacionForm()
+    
     return render(request, 'campanas/form_donacion.html', {
         'form': form,
         'campana': campana
@@ -177,6 +190,7 @@ def registrar_donacion(request, id):
             # Enviamos metadata para luego identificar la campana y el monto
             metadata={
                 'campana_id': str(campana.id),
+                'user_id': str(request.user.id), 
                 'monto': str(monto),
             },
         )

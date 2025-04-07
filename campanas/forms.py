@@ -43,3 +43,6 @@ class DonacionForm(forms.ModelForm):
         if monto is not None and monto <= 0:
             raise forms.ValidationError("El monto debe ser mayor que cero.")
         return monto
+
+
+

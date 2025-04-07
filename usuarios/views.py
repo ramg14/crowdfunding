@@ -51,3 +51,14 @@ def mi_perfil(request):
         'donaciones': donaciones,
         'campanas': campanas,
     })
+
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render
+from campanas.models import Donacion
+
+@login_required
+def mis_donaciones(request):
+    donaciones = Donacion.objects.filter(funder=request.user)
+    return render(request, 'usuarios/mis_donaciones.html', {
+        'donaciones': donaciones
+    })

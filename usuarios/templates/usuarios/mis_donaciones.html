@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block title %}Mis Donaciones{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <h1>Mis Donaciones</h1>
+  {% if donaciones %}
+    <ul class="list-group">
+      {% for d in donaciones %}
+        <li class="list-group-item">
+          Donación de ${{ d.monto|floatformat:2 }} a la campaña <strong>{{ d.campana.nombre }}</strong>
+          el {{ d.fecha|date:"d/m/Y" }}
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>No has realizado donaciones.</p>
+  {% endif %}
+</div>
+{% endblock %}

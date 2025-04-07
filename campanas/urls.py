@@ -17,3 +17,5 @@ urlpatterns = [
     path('pago/exito/', pago_exitoso, name='pago_exitoso'),
     path('pago/cancelado/', pago_cancelado, name='pago_cancelado'),
 ]
+
+

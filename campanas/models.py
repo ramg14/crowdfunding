@@ -48,7 +48,7 @@ class Campana(models.Model):
 
 class Donacion(models.Model):
     campana = models.ForeignKey(Campana, on_delete=models.CASCADE)
-    funder = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+    funder = models.ForeignKey(User, on_delete=models.CASCADE)
     monto = models.DecimalField(max_digits=10, decimal_places=2)
     fecha = models.DateTimeField(auto_now_add=True)
 
@@ -57,3 +57,6 @@ class Donacion(models.Model):
             return f"Donacion de {self.funder.username} a {self.campana}"
         else:
             return f"Donacion anonima a {self.campana}"
+
+
+
