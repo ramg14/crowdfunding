@@ -40,17 +40,35 @@
                 aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
-
+    
         <div class="collapse navbar-collapse" id="navbarNav">
           <ul class="navbar-nav ms-auto">
             {% if user.is_authenticated %}
-              <li class="nav-item">
-                <span class="navbar-text">Bienvenido, {{ user.username }} {{ user.id }}</span>
+              <!-- Li para el saludo -->
+              <li class="nav-item d-flex align-items-center me-3">
+                <span class="navbar-text">
+                  Bienvenido, {{ user.username }}
+                </span>
               </li>
-              <li class="nav-item">
-                <a class="nav-link" href="{% url 'mi_perfil' %}">Mi Perfil</a>
+    
+              <!-- Dropdown para Mi Perfil -->
+              <li class="nav-item dropdown d-flex align-items-center me-2">
+                <a class="nav-link dropdown-toggle" href="#" id="perfilDropdown" role="button" 
+                   data-bs-toggle="dropdown" aria-expanded="false">
+                  Mi Perfil
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="perfilDropdown">
+                  <li>
+                    <a class="dropdown-item" href="{% url 'mis_campanas' %}">Mis Campañas</a>
+                  </li>
+                  <li>
+                    <a class="dropdown-item" href="{% url 'mis_donaciones' %}">Mis Donaciones</a>
+                  </li>
+                </ul>
               </li>
-              <li class="nav-item">
+    
+              <!-- Cerrar Sesión -->
+              <li class="nav-item d-flex align-items-center">
                 <a class="nav-link" href="{% url 'logout' %}">Cerrar Sesión</a>
               </li>
             {% else %}
@@ -65,6 +83,7 @@
         </div>
       </div>
     </nav>
+    
 
     <!-- Hero Section -->
     <div class="hero">

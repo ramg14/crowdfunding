@@ -1,5 +1,5 @@
 # campanas/urls.py
-from django.urls import path
+from django.urls import path, include
 from . import views
 from .views import registrar_donacion
 from .views import stripe_webhook
@@ -16,6 +16,5 @@ urlpatterns = [
     path('stripe/webhook/', stripe_webhook, name='stripe_webhook'),
     path('pago/exito/', pago_exitoso, name='pago_exitoso'),
     path('pago/cancelado/', pago_cancelado, name='pago_cancelado'),
+    path('usuarios/', include('usuarios.urls')),
 ]
-
-

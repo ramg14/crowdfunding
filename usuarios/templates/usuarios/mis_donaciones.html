@@ -5,12 +5,9 @@
 <div class="container mt-4">
   <h1>Mis Donaciones</h1>
   {% if donaciones %}
-    <ul class="list-group">
+    <ul>
       {% for d in donaciones %}
-        <li class="list-group-item">
-          Donación de ${{ d.monto|floatformat:2 }} a la campaña <strong>{{ d.campana.nombre }}</strong>
-          el {{ d.fecha|date:"d/m/Y" }}
-        </li>
+        <li>Donaste ${{ d.monto|floatformat:2 }} a {{ d.campana.nombre }} el {{ d.fecha|date:"d/m/Y" }}</li>
       {% endfor %}
     </ul>
   {% else %}

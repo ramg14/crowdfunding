@@ -1,6 +1,5 @@
 {% extends 'base.html' %}
 {% block title %}Mis Campañas{% endblock %}
-
 {% block content %}
 <div class="container mt-4">
   <h1>Mis Campañas</h1>
@@ -8,11 +7,9 @@
     <ul>
       {% for c in campanas %}
         <li>
-          <!-- Enlace al detalle de la campaña -->
           <a href="{% url 'detalle_campana' c.id %}">
             {{ c.nombre }}
-          </a>
-          - Estado: {{ c.estado }}
+          </a> - Estado: {{ c.estado }}
         </li>
       {% endfor %}
     </ul>

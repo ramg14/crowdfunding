@@ -52,13 +52,21 @@ def mi_perfil(request):
         'campanas': campanas,
     })
 
-from django.contrib.auth.decorators import login_required
+# usuarios/views.py
+
 from django.shortcuts import render
-from campanas.models import Donacion
+from django.contrib.auth.decorators import login_required
+from campanas.models import Donacion, Campana
+
+@login_required
+def mis_campanas(request):
+    # Obtiene las campañas creadas por el usuario logueado
+    campanas = Campana.objects.filter(creador=request.user)
+    return render(request, 'usuarios/mis_campanas.html', {'campanas': campanas})
 
 @login_required
 def mis_donaciones(request):
+    # Obtiene las donaciones del usuario logueado
     donaciones = Donacion.objects.filter(funder=request.user)
-    return render(request, 'usuarios/mis_donaciones.html', {
-        'donaciones': donaciones
-    })
+    return render(request, 'usuarios/mis_donaciones.html', {'donaciones': donaciones})
+
