@@ -6,6 +6,8 @@ from .forms import RegistroForm
 from django.contrib.auth.decorators import login_required
 from campanas.models import Donacion, Campana
 from django.db.models import Sum
+from django.contrib import messages
+from .forms import CustomUserChangeForm  
 
 
 def registro(request):
@@ -96,3 +98,20 @@ def mis_estadisticas(request):
         'total_recaudado_campanas': total_recaudado_campanas,
     }
     return render(request, 'usuarios/mis_estadisticas.html', context)
+
+
+
+# Importa tu formulario personalizado
+
+@login_required
+def mis_datos(request):
+    if request.method == 'POST':
+        form = CustomUserChangeForm(request.POST, instance=request.user)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Tus datos han sido actualizados correctamente.")
+            return redirect('mis_datos')
+    else:
+        form = CustomUserChangeForm(instance=request.user)
+        
+    return render(request, 'usuarios/mis_datos.html', {'form': form})

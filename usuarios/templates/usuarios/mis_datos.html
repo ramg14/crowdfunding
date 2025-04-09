@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block title %}Mis Datos{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <h1>Actualizar Mis Datos</h1>
+  
+  {% if messages %}
+    {% for message in messages %}
+      <div class="alert alert-success">{{ message }}</div>
+    {% endfor %}
+  {% endif %}
+  
+  <form method="post" novalidate>
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">Actualizar</button>
+  </form>
+</div>
+{% endblock %}
