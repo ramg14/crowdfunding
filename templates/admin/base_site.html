@@ -1,0 +1,11 @@
+{% extends "admin/base_site.html" %}
+
+{% block branding %}
+  {{ block.super }}
+  <!-- Agregar un botón/enlace al Dashboard -->
+  <div style="margin-top: 10px;">
+    <a href="{% url 'dashboard' %}" class="btn btn-sm btn-secondary" style="margin-left: 10px;">
+      Ir al Dashboard de Estadísticas
+    </a>
+  </div>
+{% endblock %}

@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import registro, iniciar_sesion, cerrar_sesion, mi_perfil
-from .views import mis_campanas, mis_donaciones
+from .views import mis_campanas, mis_donaciones, mis_estadisticas
 urlpatterns = [
     path('registro/', registro, name='registro'),
     path('login/', iniciar_sesion, name='login'),
@@ -8,4 +8,5 @@ urlpatterns = [
     path('perfil/', mi_perfil, name='mi_perfil'),  # <--- nueva ruta
     path('mis-campanas/', mis_campanas, name='mis_campanas'),
     path('mis-donaciones/', mis_donaciones, name='mis_donaciones'),
+    path('mis-estadisticas/', mis_estadisticas, name='mis_estadisticas'),
 ]

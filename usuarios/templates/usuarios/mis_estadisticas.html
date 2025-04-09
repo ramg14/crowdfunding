@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% block title %}Mis Estadísticas{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <h1 class="mb-4">Mis Estadísticas</h1>
+  
+  <div class="row">
+    <div class="col-md-4">
+      <div class="card mb-3">
+        <div class="card-header">Campañas Creadas</div>
+        <div class="card-body">
+          <h5 class="card-title">{{ total_campanas_creadas }}</h5>
+        </div>
+      </div>
+    </div>
+    
+    <div class="col-md-4">
+      <div class="card mb-3">
+        <div class="card-header">Donaciones Hechas</div>
+        <div class="card-body">
+          <h5 class="card-title">{{ total_donaciones_hechas }}</h5>
+        </div>
+      </div>
+    </div>
+    
+    <div class="col-md-4">
+      <div class="card mb-3">
+        <div class="card-header">Monto Total Donado</div>
+        <div class="card-body">
+          <h5 class="card-title">${{ total_donado|floatformat:2 }}</h5>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-4">
+      <div class="card mb-3">
+        <div class="card-header">Total Recaudado en mis Campañas</div>
+        <div class="card-body">
+          <h5 class="card-title">${{ total_recaudado_campanas|floatformat:2 }}</h5>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

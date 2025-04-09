@@ -18,4 +18,5 @@ urlpatterns = [
     path('pago/cancelado/', pago_cancelado, name='pago_cancelado'),
     path('usuarios/', include('usuarios.urls')),
     path('dashboard/', dashboard, name='dashboard'),
+    path('usuarios/', include('usuarios.urls')),
 ]
