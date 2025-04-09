@@ -5,11 +5,12 @@ from .forms import CampanaForm, DonacionForm
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.http import HttpResponseForbidden
-
 import stripe
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse, HttpResponseBadRequest
+from django.contrib.auth.decorators import login_required, user_passes_test
+from django.db.models import Sum, Count
 
 def lista_campanas(request):
     # Obtenemos todas las categorías para el filtro
@@ -30,10 +31,17 @@ def lista_campanas(request):
     if q:
         campanas = campanas.filter(nombre__icontains=q)
     
-    # Creamos la paginación (10 campañas por página)
+    # Creamos la paginación (9 campañas por página)
     paginator = Paginator(campanas, 9)
     page_number = request.GET.get('page')
     campanas_page = paginator.get_page(page_number)
+    
+    # Calcular el porcentaje de recaudacion para cada campaña de la pagina actual
+    for campana in campanas_page:
+        if campana.monto_a_recaudar > 0:
+            campana.porcentaje = (campana.monto_recaudado / campana.monto_a_recaudar) * 100
+        else:
+            campana.porcentaje = 0
     
     # Enviamos los datos a la plantilla
     return render(request, 'campanas/lista_campanas.html', {
@@ -42,7 +50,6 @@ def lista_campanas(request):
         'q': q,
         'categoria_id': categoria_id,
     })
-
 
 def detalle_campana(request, id):
     campana = get_object_or_404(Campana, id=id)
@@ -283,3 +290,30 @@ def pago_exitoso(request):
 def pago_cancelado(request):
     # Renderiza una plantilla de pago cancelado
     return render(request, 'campanas/pago_cancelado.html')
+
+
+
+
+# Opcional: aseguramos que solo el staff (administrador) pueda ver el dashboard.
+def is_admin(user):
+    return user.is_staff
+
+@login_required
+@user_passes_test(is_admin)
+def dashboard(request):
+    # Consulta para el monto total de donaciones
+    total_donaciones = Donacion.objects.aggregate(total=Sum('monto'))['total'] or 0
+
+    # Consulta para obtener el número total de campañas
+    total_campanas = Campana.objects.aggregate(total=Count('id'))['total'] or 0
+
+    # Consulta para obtener el número total de donaciones
+    total_donaciones_num = Donacion.objects.count()
+
+    context = {
+        'total_donaciones': total_donaciones,
+        'total_campanas': total_campanas,
+        'total_donaciones_num': total_donaciones_num,
+    }
+    return render(request, 'campanas/dashboard.html', context)
+

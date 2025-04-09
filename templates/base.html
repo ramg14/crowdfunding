@@ -84,7 +84,6 @@
       </div>
     </nav>
     
-
     <!-- Hero Section -->
     <div class="hero">
         <div class="hero-overlay">
@@ -93,7 +92,7 @@
                 <p class="lead animate__animated animate__fadeInUp">
                     Apoya proyectos que transforman comunidades y vidas.
                 </p>
-                <!-- Reemplaza el enlace por la ruta 'crear_campana' -->
+                <!-- Enlace para crear campaña -->
                 <a href="{% url 'crear_campana' %}" 
                    class="btn btn-primary btn-lg animate__animated animate__fadeInUp">
                    Crear Campaña
@@ -101,12 +100,48 @@
             </div>
         </div>
     </div>
-
+    
     <!-- Bloque de contenido donde se inyectan las demás páginas -->
     <div class="container mt-4">
         {% block content %}{% endblock %}
     </div>
-
+    
+    <!-- Footer profesional -->
+    <footer class="bg-dark text-white mt-4">
+      <div class="container py-4">
+        <div class="row">
+          <!-- Acerca de Nosotros -->
+          <div class="col-md-4">
+            <h5>Acerca de Nosotros</h5>
+            <p>
+              Somos una plataforma de crowdfunding comprometida en apoyar proyectos innovadores y de impacto social.
+            </p>
+          </div>
+          <!-- Enlaces -->
+          <div class="col-md-4">
+            <h5>Enlaces</h5>
+            <ul class="list-unstyled">
+              <li><a href="{% url 'lista_campanas' %}" class="text-white">Inicio</a></li>
+              <li><a href="{% url 'lista_campanas' %}" class="text-white">Campañas</a></li>
+            </ul>
+          </div>
+          <!-- Contacto -->
+          <div class="col-md-4">
+            <h5>Contacto</h5>
+            <p>
+              Calle Falsa 123<br>
+              Ciudad, País<br>
+              Email: info@crowdfunding.com<br>
+              Teléfono: +1 234 567 890
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="bg-secondary text-center p-2">
+        &copy; 2025 Crowdfunding. Todos los derechos reservados.
+      </div>
+    </footer>
+    
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>

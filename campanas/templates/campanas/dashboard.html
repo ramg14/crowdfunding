@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% block title %}Dashboard Administrador{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <h1 class="mb-4">Dashboard de Administración</h1>
+  <div class="row">
+    <!-- Tarjeta para Monto Total de Donaciones -->
+    <div class="col-md-4">
+      <div class="card text-white bg-primary mb-3">
+        <div class="card-header">Total de Donaciones (Monto)</div>
+        <div class="card-body">
+          <h5 class="card-title">${{ total_donaciones|floatformat:2 }}</h5>
+        </div>
+      </div>
+    </div>
+    <!-- Tarjeta para Número de Campañas -->
+    <div class="col-md-4">
+      <div class="card text-white bg-success mb-3">
+        <div class="card-header">Total de Campañas</div>
+        <div class="card-body">
+          <h5 class="card-title">{{ total_campanas }}</h5>
+        </div>
+      </div>
+    </div>
+    <!-- Tarjeta para Número de Donaciones -->
+    <div class="col-md-4">
+      <div class="card text-white bg-info mb-3">
+        <div class="card-header">Total de Donaciones (Cantidad)</div>
+        <div class="card-body">
+          <h5 class="card-title">{{ total_donaciones_num }}</h5>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Gráfico opcional usando Chart.js -->
+  <div class="row">
+    <div class="col-md-12">
+      <canvas id="donacionesChart"></canvas>
+    </div>
+  </div>
+</div>
+
+<!-- Incluir Chart.js vía CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  // Configuración del gráfico
+  var ctx = document.getElementById('donacionesChart').getContext('2d');
+  var chart = new Chart(ctx, {
+      type: 'bar',
+      data: {
+          labels: ['Monto Total (USD)'],
+          datasets: [{
+              label: 'Total de Donaciones',
+              data: [{{ total_donaciones }}],
+              backgroundColor: 'rgba(54, 162, 235, 0.6)',
+              borderColor: 'rgba(54, 162, 235, 1)',
+              borderWidth: 1
+          }]
+      },
+      options: {
+          scales: {
+              y: {
+                  beginAtZero: true
+              }
+          }
+      }
+  });
+</script>
+{% endblock %}

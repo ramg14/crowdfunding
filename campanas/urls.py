@@ -4,7 +4,7 @@ from . import views
 from .views import registrar_donacion
 from .views import stripe_webhook
 from .views import pago_exitoso, pago_cancelado
-
+from .views import dashboard 
 urlpatterns = [
     path('', views.lista_campanas, name='lista_campanas'),
     path('campana/<int:id>/', views.detalle_campana, name='detalle_campana'),
@@ -17,4 +17,5 @@ urlpatterns = [
     path('pago/exito/', pago_exitoso, name='pago_exitoso'),
     path('pago/cancelado/', pago_cancelado, name='pago_cancelado'),
     path('usuarios/', include('usuarios.urls')),
+    path('dashboard/', dashboard, name='dashboard'),
 ]

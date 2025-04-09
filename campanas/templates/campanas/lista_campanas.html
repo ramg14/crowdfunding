@@ -8,13 +8,6 @@ Lista de Campanas
 <div class="container mt-4">
     <h1>Lista de Campanas</h1>
 
-    <!-- Botón para crear una nueva campaña 
-    <div class="mb-4 text-end">
-        <a href="{% url 'crear_campana' %}" class="btn btn-success btn-lg">
-            Crear Campaña
-        </a>
-    </div> -->
-
     <!-- Formulario para filtrar por búsqueda y categoría -->
     <form method="GET" class="mb-3">
         <div class="row">
@@ -33,10 +26,6 @@ Lista de Campanas
                     {% endfor %}
                 </select>
             </div>
-            <!-- Botón de búsqueda opcional 
-            <div class="col-md-2">
-                <button type="submit" class="btn btn-primary">Filtrar</button>
-            </div> -->
         </div>
     </form>
 
@@ -60,6 +49,17 @@ Lista de Campanas
                         <p class="card-text mb-2">
                             <small class="text-muted">Monto recaudado: ${{ campana.monto_recaudado }}</small>
                         </p>
+                        
+                        <!-- Barra de progreso -->
+                        <div class="progress mb-3" style="height: 20px;">
+                            <div class="progress-bar progress-bar-striped" role="progressbar"
+                                 style="width: {{ campana.porcentaje }}%;" 
+                                 aria-valuenow="{{ campana.porcentaje }}" 
+                                 aria-valuemin="0" aria-valuemax="100">
+                                {{ campana.porcentaje|floatformat:2 }}%
+                            </div>
+                        </div>
+                        
                         <a href="{% url 'detalle_campana' campana.id %}" class="btn btn-outline-primary mt-auto">
                             Ver Detalle
                         </a>
