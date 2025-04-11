@@ -4,12 +4,32 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserChangeForm
 
+# usuarios/forms.py
+
 class RegistroForm(UserCreationForm):
-    email = forms.EmailField(required=True)
+    first_name = forms.CharField(
+        required=True,
+        label='Nombre'
+    )
+    last_name = forms.CharField(
+        required=True,
+        label='Apellido'
+    )
+    email = forms.EmailField(
+        required=True,
+        label='Email'
+    )
 
     class Meta:
         model = User
-        fields = ["username", "email", "password1", "password2"]
+        fields = [
+            "username",
+            "first_name",
+            "last_name",
+            "email",
+            "password1",
+            "password2",
+        ]
 
 
 class CustomUserChangeForm(UserChangeForm):

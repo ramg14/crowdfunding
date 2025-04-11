@@ -5,17 +5,15 @@
     <meta charset="UTF-8">
     <title>{% block title %}Crowdfunding{% endblock %}</title>
     <!-- Bootstrap CSS -->
-
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <!-- Animate.css para animaciones -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
-
+    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" 
     integrity="sha512-06T+KYrQB8mf/OAm6S+fZ9hVDikNtTelst/HsQb07KRY0N0yWU9ShGjIjyfNf6Q2B8XWClGHheGAIIEo15EBLw==" 
     crossorigin="anonymous" referrerpolicy="no-referrer" />
-
 
     <!-- Sobrescribir variables de Bootstrap para usar tu color primario -->
     <style>
@@ -27,6 +25,12 @@
       body {
           font-family: 'Open Sans', sans-serif;
       }
+      
+      /* Definición global para la clase que usaremos en títulos u otros elementos */
+      .titulo-azul {
+          color: var(--bs-primary);
+      }
+      
       /* Hero Section */
       .hero {
           background-image: url('https://picsum.photos/1600/600');
@@ -47,11 +51,13 @@
           align-items: center;
           justify-content: center;
       }
+      
       /* Contenedor máximo */
       .container-max {
           max-width: 1200px;
           margin: 0 auto;
       }
+      
       /* Tarjetas y botones */
       .card {
           transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -66,6 +72,7 @@
       .btn:hover {
           box-shadow: 0 5px 10px rgba(0,0,0,0.2);
       }
+      
       /* Barra de navegación personalizada */
       .navbar-custom {
           background-color: var(--bs-primary);
@@ -73,7 +80,8 @@
           position: relative;
           z-index: 10;
       }
-      /* Ajustes para pantallas grandes */
+      
+      /* Ajustes adicionales para pantallas grandes */
       @media (min-width: 992px) {
           .navbar-brand {
               font-size: 1.8rem;
@@ -85,12 +93,8 @@
           h1 {
               font-size: 2.5rem;
           }
-
-          .titulo-azul {
-            color: hsl(211, 47.3%, 29%);
-        }
-        
-     
+          /* No es necesario definir .titulo-azul aquí ya que la tenemos global */
+      }
     </style>
 </head>
 <body>
@@ -100,7 +104,7 @@
         <!-- Logo y nombre de la plataforma -->
         <a class="navbar-brand d-flex align-items-center" href="{% url 'lista_campanas' %}">
           <!-- Asegúrate de colocar tu logo en la carpeta 'static/images/logo.png' -->
-          <img src="{% static 'images/logo.png' %}" alt="Logo" style="height: 40px; margin-right: 0.5rem;">
+          <img src="{% static 'images/logo.png' %}" alt="Logo" style="height: 60px; margin-right: 0.5rem;">
           Crowdfunding
         </a>
         
@@ -158,90 +162,75 @@
     </nav>
     
     {% load static %}
-
-
-<!-- Hero Section -->
-<div class="hero">
-    <div class="hero-overlay">
-        <div class="text-center">
-            <!-- Logo encima del título -->
-            <img src="{% static 'images/logo.png' %}" alt="Logo Crowdfunding" style="height:250px; margin-bottom:20px;">
-            <h1 class="display-4 animate__animated animate__fadeInDown">Bienvenido a Crowdfunding</h1>
-            <p class="lead animate__animated animate__fadeInUp">Apoya proyectos que transforman comunidades y vidas.</p>
-            <a href="{% url 'crear_campana' %}" class="btn btn-primary btn-lg animate__animated animate__fadeInUp">
-               Crear Campaña
-            </a>
+    
+    <!-- Hero Section -->
+    <div class="hero">
+        <div class="hero-overlay">
+            <div class="text-center">
+                <!-- Logo encima del título -->
+                <img src="{% static 'images/logo.png' %}" alt="Logo Crowdfunding" style="height:250px; margin-bottom:20px;">
+                <h1 class="display-4 animate__animated animate__fadeInDown">Bienvenido a Crowdfunding</h1>
+                <p class="lead animate__animated animate__fadeInUp">Apoya proyectos que transforman comunidades y vidas.</p>
+                <a href="{% url 'crear_campana' %}" class="btn btn-primary btn-lg animate__animated animate__fadeInUp">
+                   Crear Campaña
+                </a>
+            </div>
         </div>
     </div>
-</div>
-
-<!-- Bloque de contenido -->
-<div class="container container-max mt-4">
-    {% block content %}{% endblock %}
-</div>
-
     
+    <!-- Bloque de contenido -->
+    <div class="container container-max mt-4">
+        {% block content %}{% endblock %}
+    </div>
     
-<!-- Footer profesional con fondo azul (var(--bs-primary)) -->
-{% load static %}
-<!-- Footer con fondo azul, logo, redes y contacto, alineados verticalmente -->
-<footer class="mt-4" style="background-color: var(--bs-primary); color: #fff;">
-  <div class="container py-4">
-    <!-- Usamos row align-items-center para alinear verticalmente todas las columnas -->
-    <div class="row align-items-center">
-      
-      <!-- Columna del Logo -->
-      <div class="col-md-4 d-flex flex-column justify-content-center align-items-center mb-3">
-        <!-- Ajusta el width a 50% o lo que desees -->
-        <img src="{% static 'images/logo.png' %}" alt="Logo Crowdfunding" style="width: 50%; height: auto;">
-        
+    <!-- Footer profesional con fondo azul -->
+    <footer class="mt-4" style="background-color: var(--bs-primary); color: #fff;">
+      <div class="container py-4">
+        <div class="row align-items-center">
+          <!-- Columna del Logo -->
+          <div class="col-md-4 d-flex flex-column justify-content-center align-items-center mb-3">
+            <img src="{% static 'images/logo.png' %}" alt="Logo Crowdfunding" style="width: 50%; height: auto;">
+          </div>
+          <!-- Columna Redes Sociales -->
+          <div class="col-md-4 mb-3">
+            <h5>Redes Sociales</h5>
+            <ul class="list-unstyled">
+              <li>
+                <a href="https://www.facebook.com" target="_blank" class="text-white text-decoration-none">
+                  <i class="fab fa-facebook-f me-2"></i>Facebook
+                </a>
+              </li>
+              <li>
+                <a href="https://www.twitter.com" target="_blank" class="text-white text-decoration-none">
+                  <i class="fab fa-twitter me-2"></i>Twitter
+                </a>
+              </li>
+              <li>
+                <a href="https://www.instagram.com" target="_blank" class="text-white text-decoration-none">
+                  <i class="fab fa-instagram me-2"></i>Instagram
+                </a>
+              </li>
+            </ul>
+          </div>
+          <!-- Columna Contacto -->
+          <div class="col-md-4 mb-3">
+            <h5>Contacto</h5>
+            <p class="mb-1">
+              Av. 6 de Diciembre y Portugal<br>
+              Quito, Ecuador
+            </p>
+            <p class="mb-1">
+              Email: info@crowdfunding.com<br>
+              Teléfono: +593 2 123 4567
+            </p>
+          </div>
+        </div>
       </div>
-      
-      <!-- Columna Redes Sociales -->
-      <div class="col-md-4 mb-3">
-        <h5>Redes Sociales</h5>
-        <ul class="list-unstyled">
-          <li>
-            <a href="https://www.facebook.com" target="_blank" class="text-white text-decoration-none">
-              <!-- Usamos la clase de Font Awesome -->
-              <i class="fab fa-facebook-f me-2"></i>Facebook
-            </a>
-          </li>
-          <li>
-            <a href="https://www.twitter.com" target="_blank" class="text-white text-decoration-none">
-              <i class="fab fa-twitter me-2"></i>Twitter
-            </a>
-          </li>
-          <li>
-            <a href="https://www.instagram.com" target="_blank" class="text-white text-decoration-none">
-              <i class="fab fa-instagram me-2"></i>Instagram
-            </a>
-          </li>
-        </ul>
+      <!-- Barra inferior -->
+      <div class="text-center p-2" style="background-color: var(--bs-primary);">
+        &copy; 2025 Crowdfunding. Todos los derechos reservados.
       </div>
-      
-      <!-- Columna Contacto -->
-      <div class="col-md-4 mb-3">
-        <h5>Contacto</h5>
-        <p class="mb-1">
-          Av. 6 de Diciembre y Portugal<br>
-          Quito, Ecuador
-        </p>
-        <p class="mb-1">
-          Email: info@crowdfunding.com<br>
-          Teléfono: +593 2 123 4567
-        </p>
-      </div>
-      
-    </div> <!-- .row -->
-  </div> <!-- .container -->
-  
-  <!-- Barra inferior unificando el azul -->
-  <div class="text-center p-2" style="background-color: var(--bs-primary);">
-    &copy; 2025 Crowdfunding. Todos los derechos reservados.
-  </div>
-</footer>
-
+    </footer>
     
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

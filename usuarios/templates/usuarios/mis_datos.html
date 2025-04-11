@@ -2,19 +2,91 @@
 {% block title %}Mis Datos{% endblock %}
 
 {% block content %}
-<div class="container mt-4">
-  <h1>Actualizar Mis Datos</h1>
-  
-  {% if messages %}
-    {% for message in messages %}
-      <div class="alert alert-success">{{ message }}</div>
-    {% endfor %}
-  {% endif %}
-  
-  <form method="post" novalidate>
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit" class="btn btn-primary">Actualizar</button>
-  </form>
+<div class="d-flex justify-content-center align-items-center" style="min-height: 60vh;">
+  <div class="card shadow" style="width: 100%; max-width: 500px;">
+    <div class="card-body">
+      <h1 class="text-center titulo-azul mb-4">Actualizar Mis Datos</h1>
+      
+      {% if messages %}
+        {% for message in messages %}
+          <div class="alert alert-success">
+            {{ message }}
+          </div>
+        {% endfor %}
+      {% endif %}
+      
+      <form method="post" novalidate>
+        {% csrf_token %}
+        
+        <!-- Fila: Nombre de Usuario -->
+        <div class="row mb-3">
+          <label for="{{ form.username.id_for_label }}" class="col-sm-4 col-form-label">
+            Nombre de usuario
+          </label>
+          <div class="col-sm-8">
+            {{ form.username }}
+            {% if form.username.help_text %}
+              <small class="text-muted d-block mt-1">
+                {{ form.username.help_text|safe }}
+              </small>
+            {% endif %}
+            {% for error in form.username.errors %}
+              <div class="text-danger">{{ error }}</div>
+            {% endfor %}
+          </div>
+        </div>
+
+        <!-- Fila: Nombre (si tu formulario lo incluye) -->
+        {% if form.first_name %}
+        <div class="row mb-3">
+          <label for="{{ form.first_name.id_for_label }}" class="col-sm-4 col-form-label">
+            Nombre
+          </label>
+          <div class="col-sm-8">
+            {{ form.first_name }}
+            {% for error in form.first_name.errors %}
+              <div class="text-danger">{{ error }}</div>
+            {% endfor %}
+          </div>
+        </div>
+        {% endif %}
+
+        <!-- Fila: Apellidos (si tu formulario lo incluye) -->
+        {% if form.last_name %}
+        <div class="row mb-3">
+          <label for="{{ form.last_name.id_for_label }}" class="col-sm-4 col-form-label">
+            Apellidos
+          </label>
+          <div class="col-sm-8">
+            {{ form.last_name }}
+            {% for error in form.last_name.errors %}
+              <div class="text-danger">{{ error }}</div>
+            {% endfor %}
+          </div>
+        </div>
+        {% endif %}
+
+        <!-- Fila: Dirección de correo electrónico -->
+        {% if form.email %}
+        <div class="row mb-3">
+          <label for="{{ form.email.id_for_label }}" class="col-sm-4 col-form-label">
+            Dirección de correo electrónico
+          </label>
+          <div class="col-sm-8">
+            {{ form.email }}
+            {% for error in form.email.errors %}
+              <div class="text-danger">{{ error }}</div>
+            {% endfor %}
+          </div>
+        </div>
+        {% endif %}
+        
+        <!-- Botón para Actualizar -->
+        <button type="submit" class="btn btn-primary w-100" style="height: 50px; font-size: 1.2rem;">
+          Actualizar
+        </button>
+      </form>
+    </div>
+  </div>
 </div>
 {% endblock %}

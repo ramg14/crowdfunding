@@ -8,7 +8,7 @@
     <div class="col-lg-8">
       <div class="card shadow-sm">
         <div class="card-header bg-primary text-white">
-          <h3 class="mb-0">Crear una Nueva Campaña</h3>
+          <h3 class="mb-0">Datos de la Campaña</h3>
         </div>
         <div class="card-body">
           {% if form.errors %}
@@ -19,7 +19,7 @@
           <form method="post" enctype="multipart/form-data" novalidate>
             {% csrf_token %}
             {{ form.as_p }}
-            <button type="submit" class="btn btn-primary">Crear Campaña</button>
+            <button type="submit" class="btn btn-primary">Guardar Campaña</button>
             <a href="{% url 'lista_campanas' %}" class="btn btn-secondary">Cancelar</a>
           </form>
         </div>

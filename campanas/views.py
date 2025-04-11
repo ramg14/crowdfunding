@@ -26,6 +26,8 @@ def lista_campanas(request):
     # Si se seleccionó una categoría, filtramos las campañas
     if categoria_id:
         campanas = campanas.filter(categoria_id=categoria_id)
+        
+    campanas = campanas.order_by('-fecha_inicio')
     
     # Si se ingresó un término de búsqueda, filtramos por el nombre (insensible a mayúsculas)
     if q:

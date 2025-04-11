@@ -22,6 +22,7 @@ def registro(request):
         form = RegistroForm()
     return render(request, 'usuarios/registro.html', {'form': form})
 
+
 def iniciar_sesion(request):
     if request.method == 'POST':
         form = AuthenticationForm(request, data=request.POST)

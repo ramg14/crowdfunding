@@ -28,6 +28,24 @@
               <div class="text-danger">{{ error }}</div>
             {% endfor %}
           </div>
+
+          <!-- Campo: Nombre -->
+          <div class="mb-3">
+            <label for="id_first_name" class="form-label" style="width: 100%;">Nombre</label>
+            {{ form.first_name }}
+            {% for error in form.first_name.errors %}
+              <div class="text-danger">{{ error }}</div>
+            {% endfor %}
+          </div>
+
+          <!-- Campo: Apellido -->
+          <div class="mb-3">
+            <label for="id_last_name" class="form-label" style="width: 100%;">Apellido</label>
+            {{ form.last_name }}
+            {% for error in form.last_name.errors %}
+              <div class="text-danger">{{ error }}</div>
+            {% endfor %}
+          </div>
           
           <!-- Campo: Email (si tu formulario lo incluye) -->
           {% if form.email %}
