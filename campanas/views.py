@@ -163,53 +163,52 @@ def detalle_campana(request, id):
 
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
-@login_required
 
+@login_required
 def registrar_donacion(request, id):
-    # Obtenemos la campana
+    # Obtenemos la campaña
     campana = get_object_or_404(Campana, id=id)
 
     if request.method == 'POST':
-        # 1. Capturamos el monto que ingreso el usuario
-        monto_str = request.POST.get('monto', '0')
-        try:
-            monto = float(monto_str)
-        except ValueError:
-            monto = 0
-
-        # 2. Crear la sesion de Stripe Checkout
-        session = stripe.checkout.Session.create(
-            payment_method_types=['card'],
-            line_items=[{
-                'price_data': {
-                    'currency': 'usd',
-                    'product_data': {
-                        'name': f"Donacion a {campana.nombre}",
+        # Instanciamos el formulario con los datos POST
+        form = DonacionForm(request.POST)
+        if form.is_valid():
+            # Obtenemos el monto validado del formulario
+            monto = form.cleaned_data['monto']
+            
+            # Creamos la sesión de Stripe Checkout
+            session = stripe.checkout.Session.create(
+                payment_method_types=['card'],
+                line_items=[{
+                    'price_data': {
+                        'currency': 'usd',
+                        'product_data': {
+                            'name': f"Donacion a {campana.nombre}",
+                        },
+                        'unit_amount': int(monto * 100),  # Convertir a centavos
                     },
-                    'unit_amount': int(monto * 100),  # Convertir a centavos
+                    'quantity': 1,
+                }],
+                mode='payment',
+                success_url=request.build_absolute_uri('/pago/exito/'),
+                cancel_url=request.build_absolute_uri('/pago/cancelado/'),
+                metadata={
+                    'campana_id': str(campana.id),
+                    'user_id': str(request.user.id),
+                    'monto': str(monto),
                 },
-                'quantity': 1,
-            }],
-            mode='payment',
-            # Donde redirigir si el pago se completa o se cancela
-            success_url=request.build_absolute_uri('/pago/exito/'),
-            cancel_url=request.build_absolute_uri('/pago/cancelado/'),
-            # Enviamos metadata para luego identificar la campana y el monto
-            metadata={
-                'campana_id': str(campana.id),
-                'user_id': str(request.user.id), 
-                'monto': str(monto),
-            },
-        )
-
-        # 3. Redirigir al usuario a la pagina de Stripe Checkout
-        return redirect(session.url, code=303)
-
+            )
+            # Redirigimos al usuario a la página de Stripe Checkout
+            return redirect(session.url, code=303)
     else:
-        # GET: Mostramos el formulario
-        return render(request, 'campanas/form_donacion.html', {
-            'campana': campana
-        })
+        # Para el método GET, creamos un formulario vacío
+        form = DonacionForm()
+    
+    # Renderizamos la plantilla, pasando tanto la campaña como el formulario al contexto
+    return render(request, 'campanas/form_donacion.html', {
+        'campana': campana,
+        'form': form
+    })
 
 
 @csrf_exempt

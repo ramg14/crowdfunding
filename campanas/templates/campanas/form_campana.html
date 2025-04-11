@@ -1,16 +1,30 @@
-<!-- campanas/templates/campanas/form_campana.html -->
 {% extends 'base.html' %}
-
-{% block title %}
-{{ accion }} Campana
-{% endblock %}
+{% load static %}
+{% block title %}Crear Campaña{% endblock %}
 
 {% block content %}
-<h1>{{ accion }} Campana</h1>
-<form method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit" class="btn btn-primary">{{ accion }}</button>
-</form>
-<a href="{% url 'lista_campanas' %}" class="btn btn-secondary">Cancelar</a>
+<div class="container container-max mt-4">
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+      <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white">
+          <h3 class="mb-0">Crear una Nueva Campaña</h3>
+        </div>
+        <div class="card-body">
+          {% if form.errors %}
+            <div class="alert alert-danger">
+              Por favor corrige los errores en el formulario.
+            </div>
+          {% endif %}
+          <form method="post" enctype="multipart/form-data" novalidate>
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-primary">Crear Campaña</button>
+            <a href="{% url 'lista_campanas' %}" class="btn btn-secondary">Cancelar</a>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock %}

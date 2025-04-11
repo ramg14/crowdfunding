@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -7,34 +8,94 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <!-- Animate.css para animaciones -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <!-- Sobrescribir variables de Bootstrap para usar tu color primario -->
     <style>
-        /* Estilos personalizados para el Hero */
-        .hero {
-            background-image: url('https://picsum.photos/1600/600?grayscale');
-            background-size: cover;
-            background-position: center;
-            height: 400px;
-            color: #fff;
-            position: relative;
-        }
-        .hero-overlay {
-            background-color: rgba(0, 0, 0, 0.5);
-            position: absolute;
-            top: 0;
-            bottom: 0;
-            right: 0;
-            left: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+      :root {
+          --bs-primary: hsl(211, 47.3%, 29%);
+          --bs-blue: hsl(211, 47.3%, 29%);
+      }
+      
+      body {
+          font-family: 'Open Sans', sans-serif;
+      }
+      /* Hero Section */
+      .hero {
+          background-image: url('https://picsum.photos/1600/600');
+          background-size: cover;
+          background-position: center;
+          height: 400px;
+          color: #fff;
+          position: relative;
+      }
+      .hero-overlay {
+          background-color: rgba(0, 0, 0, 0.5);
+          position: absolute;
+          top: 0;
+          bottom: 0;
+          right: 0;
+          left: 0;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+      }
+      /* Contenedor máximo */
+      .container-max {
+          max-width: 1200px;
+          margin: 0 auto;
+      }
+      /* Tarjetas y botones */
+      .card {
+          transition: transform 0.3s ease, box-shadow 0.3s ease;
+      }
+      .card:hover {
+          transform: translateY(-5px);
+          box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+      }
+      .btn {
+          transition: background-color 0.3s ease, box-shadow 0.3s ease;
+      }
+      .btn:hover {
+          box-shadow: 0 5px 10px rgba(0,0,0,0.2);
+      }
+      /* Barra de navegación personalizada */
+      .navbar-custom {
+          background-color: var(--bs-primary);
+          border-bottom: 2px solid #fff;
+          position: relative;
+          z-index: 10;
+      }
+      /* Ajustes para pantallas grandes */
+      @media (min-width: 992px) {
+          .navbar-brand {
+              font-size: 1.8rem;
+          }
+          .navbar-nav .nav-link {
+              font-size: 1.1rem;
+              margin-right: 1rem;
+          }
+          h1 {
+              font-size: 2.5rem;
+          }
+      }
     </style>
 </head>
 <body>
     <!-- Barra de navegación -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-      <div class="container-fluid">
-        <a class="navbar-brand" href="{% url 'lista_campanas' %}">Crowdfunding</a>
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-custom">
+      <div class="container-fluid d-flex align-items-center">
+        <!-- Logo y nombre de la plataforma -->
+        <a class="navbar-brand d-flex align-items-center" href="{% url 'lista_campanas' %}">
+          <!-- Asegúrate de colocar tu logo en la carpeta 'static/images/logo.png' -->
+          <img src="{% static 'images/logo.png' %}" alt="Logo" style="height: 40px; margin-right: 0.5rem;">
+          Crowdfunding
+        </a>
+        
+        <!-- Separador vertical opcional (solo en pantallas grandes) -->
+        <div class="vr d-none d-lg-block mx-3" style="height: 40px; border-color: #fff;"></div>
+        
+        <!-- Botón toggler -->
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" 
                 data-bs-target="#navbarNav" aria-controls="navbarNav" 
                 aria-expanded="false" aria-label="Toggle navigation">
@@ -44,42 +105,32 @@
         <div class="collapse navbar-collapse" id="navbarNav">
           <ul class="navbar-nav ms-auto">
             {% if user.is_authenticated %}
-              <!-- Li para el saludo -->
+              <!-- Saludo -->
               <li class="nav-item d-flex align-items-center me-3">
-                <span class="navbar-text">
-                  Bienvenido, {{ user.username }}
-                </span>
+                <span class="navbar-text" style="font-size: 0.95rem; color: #fff;">Bienvenido, {{ user.username }}</span>
               </li>
-    
-              <!-- Dropdown para Mi Perfil -->
+              <!-- Dropdown "Mi Perfil" -->
               <li class="nav-item dropdown d-flex align-items-center me-2">
-                <a class="nav-link dropdown-toggle" href="#" id="perfilDropdown" role="button" 
-                   data-bs-toggle="dropdown" aria-expanded="false">
+                <a class="nav-link dropdown-toggle" href="#" id="perfilDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="font-size: 1.1rem;">
                   Mi Perfil
                 </a>
                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="perfilDropdown">
-                  <li>
-                    <a class="dropdown-item" href="{% url 'mis_campanas' %}">Mis Campañas</a>
-                  </li>
-                  <li>
-                    <a class="dropdown-item" href="{% url 'mis_donaciones' %}">Mis Donaciones</a>
-                  </li>
-                  <li>
-                    <a class="dropdown-item" href="{% url 'mis_estadisticas' %}">Mis Estadísticas</a>
-                  </li>
-                  <li>
-                    <a class="dropdown-item" href="{% url 'mis_datos' %}">Mis Datos</a>
-                  </li>
-                  <li>
-                    <a class="dropdown-item" href="{% url 'password_change' %}">Cambiar Contraseña</a>
-                  </li>
-
+                  <li><a class="dropdown-item" href="{% url 'mis_campanas' %}">Mis Campañas</a></li>
+                  <li><a class="dropdown-item" href="{% url 'mis_donaciones' %}">Mis Donaciones</a></li>
+                  <li><a class="dropdown-item" href="{% url 'mis_estadisticas' %}">Mis Estadísticas</a></li>
+                  <li><a class="dropdown-item" href="{% url 'mis_datos' %}">Mis Datos</a></li>
+                  <li><a class="dropdown-item" href="{% url 'password_change' %}">Cambiar Contraseña</a></li>
                 </ul>
               </li>
-    
+              <!-- Botón CTA: Crear Campaña -->
+              <li class="nav-item d-flex align-items-center ms-2">
+                <a href="{% url 'crear_campana' %}" class="btn btn-primary" style="padding: 0.5rem 1rem; font-size: 1.1rem;">
+                  Crear Campaña
+                </a>
+              </li>
               <!-- Cerrar Sesión -->
               <li class="nav-item d-flex align-items-center">
-                <a class="nav-link" href="{% url 'logout' %}">Cerrar Sesión</a>
+                <a class="nav-link" href="{% url 'logout' %}" style="font-size: 1.1rem;">Cerrar Sesión</a>
               </li>
             {% else %}
               <li class="nav-item">
@@ -99,56 +150,47 @@
         <div class="hero-overlay">
             <div class="text-center">
                 <h1 class="display-4 animate__animated animate__fadeInDown">Bienvenido a Crowdfunding</h1>
-                <p class="lead animate__animated animate__fadeInUp">
-                    Apoya proyectos que transforman comunidades y vidas.
-                </p>
-                <!-- Enlace para crear campaña -->
-                <a href="{% url 'crear_campana' %}" 
-                   class="btn btn-primary btn-lg animate__animated animate__fadeInUp">
+                <p class="lead animate__animated animate__fadeInUp">Apoya proyectos que transforman comunidades y vidas.</p>
+                <a href="{% url 'crear_campana' %}" class="btn btn-primary btn-lg animate__animated animate__fadeInUp">
                    Crear Campaña
                 </a>
             </div>
         </div>
     </div>
     
-    <!-- Bloque de contenido donde se inyectan las demás páginas -->
-    <div class="container mt-4">
-        {% block content %}{% endblock %}
+    <!-- Bloque de contenido -->
+    <div class="container container-max mt-4">
+         {% block content %}{% endblock %}
     </div>
     
     <!-- Footer profesional -->
     <footer class="bg-dark text-white mt-4">
       <div class="container py-4">
-        <div class="row">
-          <!-- Acerca de Nosotros -->
-          <div class="col-md-4">
-            <h5>Acerca de Nosotros</h5>
-            <p>
-              Somos una plataforma de crowdfunding comprometida en apoyar proyectos innovadores y de impacto social.
-            </p>
-          </div>
-          <!-- Enlaces -->
-          <div class="col-md-4">
-            <h5>Enlaces</h5>
-            <ul class="list-unstyled">
-              <li><a href="{% url 'lista_campanas' %}" class="text-white">Inicio</a></li>
-              <li><a href="{% url 'lista_campanas' %}" class="text-white">Campañas</a></li>
-            </ul>
-          </div>
-          <!-- Contacto -->
-          <div class="col-md-4">
-            <h5>Contacto</h5>
-            <p>
-              Calle Falsa 123<br>
-              Ciudad, País<br>
-              Email: info@crowdfunding.com<br>
-              Teléfono: +1 234 567 890
-            </p>
-          </div>
-        </div>
+         <div class="row">
+             <div class="col-md-4">
+                 <h5>Acerca de Nosotros</h5>
+                 <p>Somos una plataforma de crowdfunding comprometida en apoyar proyectos innovadores y de impacto social.</p>
+             </div>
+             <div class="col-md-4">
+                 <h5>Enlaces</h5>
+                 <ul class="list-unstyled">
+                     <li><a href="{% url 'lista_campanas' %}" class="text-white">Inicio</a></li>
+                     <li><a href="{% url 'lista_campanas' %}" class="text-white">Campañas</a></li>
+                 </ul>
+             </div>
+             <div class="col-md-4">
+                 <h5>Contacto</h5>
+                 <p>
+                    Calle Falsa 123<br>
+                    Ciudad, País<br>
+                    Email: info@crowdfunding.com<br>
+                    Teléfono: +1 234 567 890
+                 </p>
+             </div>
+         </div>
       </div>
       <div class="bg-secondary text-center p-2">
-        &copy; 2025 Crowdfunding. Todos los derechos reservados.
+         &copy; 2025 Crowdfunding. Todos los derechos reservados.
       </div>
     </footer>
     

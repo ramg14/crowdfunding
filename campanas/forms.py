@@ -2,17 +2,32 @@
 from django import forms
 from .models import Campana, Donacion
 
+# campanas/forms.py
+
 class CampanaForm(forms.ModelForm):
     class Meta:
         model = Campana
         fields = [
-            'categoria', 'nombre', 'descripcion', 'foto', 'beneficiario',
-            'monto_a_recaudar', 'fecha_inicio', 'fecha_cierre', 'estado'
+            'categoria',
+            'nombre',
+            'descripcion',
+            'foto',
+            'beneficiario',
+            'monto_a_recaudar',
+            'fecha_inicio',
+            'fecha_cierre',
+            'estado',
         ]
-
         widgets = {
-            'fecha_inicio': forms.DateInput(attrs={'type': 'date'}),
-            'fecha_cierre': forms.DateInput(attrs={'type': 'date'}),
+            'categoria': forms.Select(attrs={'class': 'form-select'}),
+            'nombre': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Introduce el nombre de la campaña'}),
+            'descripcion': forms.Textarea(attrs={'class': 'form-control', 'rows': 4, 'placeholder': 'Describe tu campaña'}),
+            'foto': forms.ClearableFileInput(attrs={'class': 'form-control'}),
+            'beneficiario': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Nombre del beneficiario'}),
+            'monto_a_recaudar': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Monto a recaudar'}),
+            'fecha_inicio': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
+            'fecha_cierre': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
+            'estado': forms.Select(attrs={'class': 'form-select'}),
         }
 
     def clean_monto_a_recaudar(self):
@@ -33,11 +48,20 @@ class CampanaForm(forms.ModelForm):
                     "La fecha de inicio no puede ser posterior a la fecha de cierre."
                 )    
 
+from django import forms
+from .models import Donacion
+
 class DonacionForm(forms.ModelForm):
     class Meta:
         model = Donacion
-        fields = ['monto']
-    
+        fields = ['monto']  # Asegúrate de incluir 'monto' aquí
+        widgets = {
+            'monto': forms.NumberInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Ingresa el monto'
+            }),
+        }
+
     def clean_monto(self):
         monto = self.cleaned_data.get('monto')
         if monto is not None and monto <= 0:

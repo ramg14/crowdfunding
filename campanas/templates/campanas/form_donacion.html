@@ -1,19 +1,40 @@
 {% extends 'base.html' %}
-
-{% block title %}
-Donar a {{ campana.nombre }}
-{% endblock %}
+{% load static %}
+{% block title %}Donar a {{ campana.nombre }}{% endblock %}
 
 {% block content %}
-<h1>Donar a {{ campana.nombre }}</h1>
-
-<form method="POST">
-    {% csrf_token %}
-    <div>
-        <label for="monto">Monto a donar (USD):</label>
-        <input type="number" name="monto" step="0.01" min="0" required>
+<div class="container mt-4">
+  <div class="row justify-content-center">
+    <div class="col-lg-6">
+      <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white">
+          <h3 class="mb-0">Donar a {{ campana.nombre }}</h3>
+        </div>
+        <div class="card-body">
+          <p class="mb-3">
+            Ingresa el monto que deseas donar para ayudar a <strong>{{ campana.beneficiario }}</strong>.
+          </p>
+          {% if form.errors %}
+            <div class="alert alert-danger">
+              Corrige los siguientes errores:
+              <ul>
+                {% for field in form %}
+                  {% for error in field.errors %}
+                    <li>{{ field.label }}: {{ error }}</li>
+                  {% endfor %}
+                {% endfor %}
+              </ul>
+            </div>
+          {% endif %}
+          <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-primary">Donar</button>
+            <a href="{% url 'detalle_campana' campana.id %}" class="btn btn-secondary">Cancelar</a>
+          </form>
+        </div>
+      </div>
     </div>
-    <button type="submit" class="btn btn-primary mt-2">Donar</button>
-    <a href="{% url 'detalle_campana' campana.id %}" class="btn btn-secondary mt-2">Cancelar</a>
-</form>
+  </div>
+</div>
 {% endblock %}
