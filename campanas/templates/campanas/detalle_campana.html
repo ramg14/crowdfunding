@@ -1,67 +1,57 @@
 {% extends 'base.html' %}
-
-{% block title %}
-Detalle de Campana
-{% endblock %}
+{% load static %}
+{% block title %}{{ campana.nombre }}{% endblock %}
 
 {% block content %}
 <div class="container mt-4">
-  <div class="row">
-    <!-- Columna izquierda: Imagen -->
-    <div class="col-md-6 mb-3">
-      {% if campana.foto %}
-        <img src="{{ campana.foto.url }}" 
-             alt="Foto de {{ campana.nombre }}" 
-             class="img-fluid rounded shadow" 
-             style="object-fit: cover; width: 100%; max-height: 400px;">
-      {% else %}
-        <img src="https://via.placeholder.com/600x400.png?text=Sin+Imagen" 
-             alt="Sin imagen" 
-             class="img-fluid rounded shadow"
-             style="object-fit: cover; width: 100%; max-height: 400px;">
-      {% endif %}
-    </div>
-
-    <!-- Columna derecha: Información -->
-    <div class="col-md-6">
-      <h1>{{ campana.nombre }}</h1>
-      <p>{{ campana.descripcion }}</p>
-      <p><strong>Beneficiario:</strong> {{ campana.beneficiario }}</p>
-      <p><strong>Monto a recaudar:</strong> ${{ campana.monto_a_recaudar|floatformat:2 }}</p>
-      <p><strong>Monto recaudado:</strong> ${{ campana.monto_recaudado|floatformat:2 }}</p>
-      <p><strong>Fecha inicio:</strong> {{ campana.fecha_inicio }}</p>
-      <p><strong>Fecha cierre:</strong> {{ campana.fecha_cierre }}</p>
-      <p><strong>Estado:</strong> {{ campana.estado }}</p>
-
-      <!-- Barra de progreso -->
-      <div class="progress my-3" style="height: 25px;">
-        <div class="progress-bar progress-bar-striped bg-success" role="progressbar"
-             style="width: {{ porcentaje }}%;" 
-             aria-valuenow="{{ porcentaje }}" 
-             aria-valuemin="0" 
-             aria-valuemax="100">
-          {{ porcentaje|floatformat:2 }}%
-        </div>
+  <!-- Tarjeta con imagen a la izquierda y contenido a la derecha -->
+  <div class="card shadow-lg">
+    <div class="row g-0">
+      <!-- Columna para la imagen -->
+      <div class="col-md-5">
+        {% if campana.foto %}
+          <img src="{{ campana.foto.url }}" class="img-fluid rounded-start" alt="Foto de {{ campana.nombre }}" style="height: 100%; object-fit: cover;">
+        {% else %}
+          <!-- Si no hay foto, podrías mostrar un placeholder estático -->
+          <img src="{% static 'images/placeholder.jpg' %}" class="img-fluid rounded-start" alt="Imagen no disponible">
+        {% endif %}
       </div>
-
-      <!-- Botones de acción -->
-      {% if user.is_authenticated %}
-          {% if user == campana.creador or user.is_staff %}
-            <div class="mb-3">
-              <a href="{% url 'editar_campana' campana.id %}" class="btn btn-primary me-2">Editar</a>
-              <a href="{% url 'eliminar_campana' campana.id %}" class="btn btn-danger">Eliminar</a>
-            </div>
-          {% endif %}
-      {% endif %}
-
-      {% if campana.estado|lower == 'abierta' %}
-        <a href="{% url 'registrar_donacion' campana.id %}" class="btn btn-success">Donar</a>
-      {% else %}
-        <p class="text-muted">Campaña no está abierta para donaciones.</p>
-      {% endif %}
-
-      <div class="mt-3">
-        <a href="{% url 'lista_campanas' %}" class="btn btn-secondary">Volver a lista</a>
+      
+      <!-- Columna para la información -->
+      <div class="col-md-7">
+        <div class="card-body">
+          <h3 class="card-title">{{ campana.nombre }}</h3>
+          <p class="card-text text-muted">{{ campana.descripcion }}</p>
+          
+          <p><strong>Beneficiario:</strong> {{ campana.beneficiario }}</p>
+          <p><strong>Monto a recaudar:</strong> ${{ campana.monto_a_recaudar }}</p>
+          <p><strong>Monto recaudado:</strong> ${{ campana.monto_recaudado }}</p>
+          <p><strong>Fecha inicio:</strong> {{ campana.fecha_inicio|date:"d/m/Y" }}</p>
+          <p><strong>Fecha cierre:</strong> {{ campana.fecha_cierre|date:"d/m/Y" }}</p>
+          <p><strong>Estado:</strong> {{ campana.estado }}</p>
+          
+          <!-- Grupo de botones -->
+          <div class="mt-4">
+            <!-- Editar y Eliminar (solo si corresponde al creador o staff, 
+                 ya asumiendo que tu vista y tu lógica de permisos lo manejan) -->
+            {% if user.is_authenticated %}
+              {% if user == campana.creador or user.is_staff %}
+                <a href="{% url 'editar_campana' campana.id %}" class="btn btn-primary me-2">Editar</a>
+                <a href="{% url 'eliminar_campana' campana.id %}" class="btn btn-danger me-2">Eliminar</a>
+              {% endif %}
+              
+              <!-- Donar si la campaña está abierta -->
+              {% if campana.estado|lower == 'abierta' %}
+                <a href="{% url 'registrar_donacion' campana.id %}" class="btn btn-success me-2">Donar</a>
+              {% else %}
+                <button class="btn btn-secondary me-2" disabled>No disponible</button>
+              {% endif %}
+            {% endif %}
+            
+            <!-- Botón Volver a lista -->
+            <a href="{% url 'lista_campanas' %}" class="btn btn-outline-secondary">Volver a lista</a>
+          </div>
+        </div>
       </div>
     </div>
   </div>

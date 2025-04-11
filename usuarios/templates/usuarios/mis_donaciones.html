@@ -4,12 +4,23 @@
 {% block content %}
 <div class="container mt-4">
   <h1>Mis Donaciones</h1>
+  
   {% if donaciones %}
-    <ul>
+    <div class="list-group">
       {% for d in donaciones %}
-        <li>Donaste ${{ d.monto|floatformat:2 }} a {{ d.campana.nombre }} el {{ d.fecha|date:"d/m/Y" }}</li>
+        <!-- Cada donación se muestra como un item de la lista -->
+        <a href="{% url 'detalle_campana' d.campana.id %}" 
+           class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+          <!-- Texto principal: monto, nombre de la campaña y fecha -->
+          <span>
+            Donaste ${{ d.monto|floatformat:2 }} a {{ d.campana.nombre }} 
+            el {{ d.fecha|date:"d/m/Y" }}
+          </span>
+          <!-- Badge opcional, para invitar a ver la campaña -->
+          <span class="badge bg-secondary">Ver campaña</span>
+        </a>
       {% endfor %}
-    </ul>
+    </div>
   {% else %}
     <p>No has realizado donaciones.</p>
   {% endif %}
