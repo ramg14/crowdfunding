@@ -8,12 +8,12 @@ Lista de Campanas
 <div class="container mt-4">
     <h1 class="titulo-azul">Lista de campañas</h1>
     
-    <!-- Formulario para filtrar por búsqueda y categoría -->
+    <!-- Formulario para filtrar -->
     <form method="GET" class="mb-3">
         <div class="row">
-            <!-- Campo de búsqueda (opcional) -->
+            <!-- Campo de búsqueda -->
             <div class="col-md-4">
-                <input type="text" name="q" value="{{ q }}" placeholder="Buscar campanas" class="form-control">
+                <input type="text" name="q" value="{{ q }}" placeholder="Buscar campañas" class="form-control" onchange="this.form.submit()">
             </div>
             <!-- Dropdown de categorías -->
             <div class="col-md-4">
@@ -24,6 +24,14 @@ Lista de Campanas
                             {{ cat.nombre }}
                         </option>
                     {% endfor %}
+                </select>
+            </div>
+            <!-- Dropdown de estado -->
+            <div class="col-md-4">
+                <select name="estado" class="form-control" onchange="this.form.submit()">
+                    <option value="">Todos los estados</option>
+                    <option value="abierta" {% if request.GET.estado == "abierta" %}selected{% endif %}>Abierta</option>
+                    <option value="cerrada" {% if request.GET.estado == "cerrada" %}selected{% endif %}>Cerrada</option>
                 </select>
             </div>
         </div>
@@ -73,11 +81,11 @@ Lista de Campanas
 
     <!-- Paginación -->
     {% if campanas.has_other_pages %}
-        <nav aria-label="Page navigation" class="d-flex justify-content-center">
+        <nav aria-label="Page navigation" class="d-flex justify-content-center mt-3">
             <ul class="pagination">
                 {% if campanas.has_previous %}
                     <li class="page-item">
-                        <a class="page-link" href="?page={{ campanas.previous_page_number }}{% if q %}&q={{ q }}{% endif %}{% if categoria_id %}&categoria={{ categoria_id }}{% endif %}">Anterior</a>
+                        <a class="page-link" href="?page={{ campanas.previous_page_number }}{% if q %}&q={{ q }}{% endif %}{% if categoria_id %}&categoria={{ categoria_id }}{% endif %}{% if request.GET.estado %}&estado={{ request.GET.estado }}{% endif %}">Anterior</a>
                     </li>
                 {% endif %}
                 {% for num in campanas.paginator.page_range %}
@@ -85,13 +93,13 @@ Lista de Campanas
                         <li class="page-item active"><span class="page-link">{{ num }}</span></li>
                     {% else %}
                         <li class="page-item">
-                            <a class="page-link" href="?page={{ num }}{% if q %}&q={{ q }}{% endif %}{% if categoria_id %}&categoria={{ categoria_id }}{% endif %}">{{ num }}</a>
+                            <a class="page-link" href="?page={{ num }}{% if q %}&q={{ q }}{% endif %}{% if categoria_id %}&categoria={{ categoria_id }}{% endif %}{% if request.GET.estado %}&estado={{ request.GET.estado }}{% endif %}">{{ num }}</a>
                         </li>
                     {% endif %}
                 {% endfor %}
                 {% if campanas.has_next %}
                     <li class="page-item">
-                        <a class="page-link" href="?page={{ campanas.next_page_number }}{% if q %}&q={{ q }}{% endif %}{% if categoria_id %}&categoria={{ categoria_id }}{% endif %}">Siguiente</a>
+                        <a class="page-link" href="?page={{ campanas.next_page_number }}{% if q %}&q={{ q }}{% endif %}{% if categoria_id %}&categoria={{ categoria_id }}{% endif %}{% if request.GET.estado %}&estado={{ request.GET.estado }}{% endif %}">Siguiente</a>
                     </li>
                 {% endif %}
             </ul>

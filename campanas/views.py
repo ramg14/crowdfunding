@@ -12,45 +12,48 @@ from django.http import HttpResponse, HttpResponseBadRequest
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.db.models import Sum, Count
 
+
+
 def lista_campanas(request):
-    # Obtenemos todas las categorías para el filtro
-    categorias = Categoria.objects.all()
-    # Obtenemos el término de búsqueda (opcional)
+    # Obtén todas las campañas
+    campanas = Campana.objects.all().order_by('-fecha_inicio')  # Opcional, ordenar por fecha reciente primero
+    
+    # Filtro de búsqueda (por nombre)
     q = request.GET.get('q', '')
-    # Obtenemos el parámetro 'categoria' de la URL
-    categoria_id = request.GET.get('categoria')
-    
-    # Obtenemos todas las campañas ordenadas por fecha de inicio descendente
-    campanas = Campana.objects.all().order_by('-fecha_inicio')
-    
-    # Si se seleccionó una categoría, filtramos las campañas
-    if categoria_id:
-        campanas = campanas.filter(categoria_id=categoria_id)
-        
-    campanas = campanas.order_by('-fecha_inicio')
-    
-    # Si se ingresó un término de búsqueda, filtramos por el nombre (insensible a mayúsculas)
     if q:
         campanas = campanas.filter(nombre__icontains=q)
     
-    # Creamos la paginación (9 campañas por página)
-    paginator = Paginator(campanas, 9)
-    page_number = request.GET.get('page')
-    campanas_page = paginator.get_page(page_number)
+    # Filtro de categoría
+    categoria_id = request.GET.get('categoria', '')
+    if categoria_id:
+        campanas = campanas.filter(categoria__id=categoria_id)
     
-    # Calcular el porcentaje de recaudacion para cada campaña de la pagina actual
-    for campana in campanas_page:
+    # Filtro de estado
+    estado = request.GET.get('estado', '')
+    if estado in ['abierta', 'cerrada']:
+        campanas = campanas.filter(estado=estado)
+    
+    # Calcular porcentaje ANTES de paginar
+    for campana in campanas:
         if campana.monto_a_recaudar > 0:
             campana.porcentaje = (campana.monto_recaudado / campana.monto_a_recaudar) * 100
         else:
             campana.porcentaje = 0
     
-    # Enviamos los datos a la plantilla
+    # Ahora sí, aplicar paginación
+    paginator = Paginator(campanas, 9)
+    page_number = request.GET.get('page')
+    campanas_page = paginator.get_page(page_number)
+    
+    # Obtiene todas las categorías para el select
+    categorias = Categoria.objects.all()
+    
     return render(request, 'campanas/lista_campanas.html', {
         'campanas': campanas_page,
-        'categorias': categorias,
         'q': q,
         'categoria_id': categoria_id,
+        'categorias': categorias,
+        'estado': estado,
     })
 
 def detalle_campana(request, id):
@@ -59,12 +62,13 @@ def detalle_campana(request, id):
         'campana': campana
     })
 
+
 @login_required
 def crear_campana(request):
     if request.method == 'POST':
         form = CampanaForm(request.POST, request.FILES)
         if form.is_valid():
-            # Usamos commit=False para asignar manualmente el creador
+            
             campana = form.save(commit=False)
             campana.creador = request.user  # Asignar el usuario logueado
             campana.save()
